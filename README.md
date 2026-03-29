@@ -97,6 +97,65 @@ F-3: step0→...→9 ✅
 
 ---
 
+## 알림 설정 (Slack / Discord / Telegram)
+
+빌드 실패, QA 결과, 배포 완료 등의 이벤트를 자동으로 알림 받을 수 있습니다.
+
+### 설정 방법 3가지
+
+**방법 1: 환경변수 (가장 간단)**
+
+```bash
+# .bashrc, .zshrc, 또는 .env에 추가
+export OPENSMITH_SLACK_WEBHOOK="https://hooks.slack.com/services/T.../B.../xxx"
+export OPENSMITH_DISCORD_WEBHOOK="https://discord.com/api/webhooks/123/abc"
+export OPENSMITH_TELEGRAM_TOKEN="123456:ABC-DEF..."
+export OPENSMITH_TELEGRAM_CHAT_ID="987654321"
+```
+
+**방법 2: .opensmith/config.json (프로젝트별)**
+
+`/opensmith:prd` Phase 6에서 자동 생성되는 config에 추가하거나 직접 편집:
+
+```json
+{
+  "notifications": {
+    "slack_webhook": "https://hooks.slack.com/services/...",
+    "discord_webhook": "https://discord.com/api/webhooks/...",
+    "telegram_token": "123456:ABC-DEF...",
+    "telegram_chat_id": "987654321"
+  }
+}
+```
+
+**방법 3: 플러그인 설치 시**
+
+`claude plugin install` 할 때 프롬프트로 입력. 민감 정보(webhook URL)는 시스템 키체인에 저장됩니다.
+
+### 알림이 발송되는 이벤트
+
+| 이벤트 | 시점 |
+|--------|------|
+| `build_success` | 빌드 성공 (step6) |
+| `build_fail` | 빌드 3회 실패 (step6) |
+| `qa_pass` | QA 통과 (step7) |
+| `qa_fail` | QA 실패 (step7) |
+| `deploy_success` | 배포 성공 (step8) |
+| `deploy_fail` | 배포 실패 (step8) |
+| `feature_done` | 기능 구현 완료 (step9) |
+| `pipeline_done` | --all 전체 완료 (step9) |
+| `escalation` | 3단계 에스컬레이션 |
+
+### 수동 알림 테스트
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event build_success --message "테스트 알림"
+```
+
+설정하지 않은 채널은 자동으로 스킵됩니다. 하나도 설정하지 않아도 파이프라인은 정상 동작합니다.
+
+---
+
 ## 스킬 목록
 
 | 스킬 | 설명 |
