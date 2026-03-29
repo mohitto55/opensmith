@@ -317,7 +317,18 @@ PRD Section 6의 기술 스택 + 라운드 2 답변을 종합:
 - `.claude/skills/backend-patterns.md` — 스택 맞춤 백엔드 패턴
 - `.claude/skills/never-do.md` — 기본 금지 규칙 + 스택별 금지 규칙
 
-### 6-3. 완료 안내
+### 6-3. Memory Bank 초기화 안내
+
+```
+Memory Bank를 초기화하시겠습니까?
+Memory Bank는 과거 의사결정, 에러 패턴, 프로젝트 제약사항을 학습하여
+/opensmith:execute 실행 시 자동으로 관련 컨텍스트를 제공합니다.
+
+초기화하려면: /opensmith:init-memory
+나중에 해도 됩니다 (Memory Bank 없이도 기본 기능은 동작합니다).
+```
+
+### 6-4. 완료 안내
 
 ```
 프로젝트 설정이 완료되었습니다:
