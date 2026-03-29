@@ -1,0 +1,82 @@
+# LoopyEra Configuration
+# Copy this file and fill in your project-specific values.
+# Then run: bash setup.sh --config your-config.yaml
+
+# ============================================================================
+# Project Identity
+# ============================================================================
+
+project_name: MyProject
+project_dir: /home/user/my-project
+project_description: A web application for managing tasks
+project_description_long: >
+  MyProject is a full-stack web application that enables teams to manage
+  tasks, track progress, and collaborate in real time. It supports role-based
+  access control and integrates with third-party services.
+
+# ============================================================================
+# Frontend
+# ============================================================================
+
+frontend_framework: "Next.js 14 (App Router, TypeScript)"
+
+frontend_build_cmd: "cd frontend && npm run build"
+frontend_dev_cmd: "cd frontend && npm run dev"
+frontend_typecheck_cmd: "cd frontend && npx tsc --noEmit"
+
+# Forbidden frontend patterns (each item becomes a NEVER DO rule)
+frontend_never_do:
+  - "`<input type=\"color\">` forbidden -- use `react-colorful` instead"
+  - "Tailwind CSS forbidden -- use CSS modules or globals.css"
+  - "`React.FC` forbidden -- use `export default function`"
+  - "Components over 500 lines forbidden -- split into smaller files"
+  - "Inline styles forbidden -- use CSS classes"
+
+# ============================================================================
+# Backend
+# ============================================================================
+
+backend_framework: "ASP.NET Core 8.0 (Minimal API)"
+
+backend_build_cmd: "cd backend/MyProject.API && dotnet build"
+backend_dev_cmd: "cd backend/MyProject.API && dotnet run"
+
+# Forbidden backend patterns
+backend_never_do:
+  - "Controllers forbidden -- use Minimal API endpoints"
+  - "Direct DB access in endpoints forbidden -- use service layer"
+  - "Hardcoded passwords/tokens forbidden -- use environment variables"
+  - "Wildcard CORS `*` forbidden -- specify allowed origins"
+
+# ============================================================================
+# Infrastructure & Services
+# ============================================================================
+
+database: "PostgreSQL 16"
+auth_method: "JWT + Google OAuth 2.0"
+infra: "AWS EKS + Terraform"
+ai_services: "Claude API"
+
+# ============================================================================
+# Deploy Commands
+# ============================================================================
+
+deploy_backend_cmd: |
+  cd backend && docker build -t myproject-api .
+  docker push registry.example.com/myproject-api:latest
+  kubectl rollout restart deployment backend -n myproject
+
+deploy_frontend_cmd: |
+  cd frontend && docker build -t myproject-web .
+  docker push registry.example.com/myproject-web:latest
+  kubectl rollout restart deployment frontend -n myproject
+
+# ============================================================================
+# Guard Thresholds
+# ============================================================================
+
+# Maximum number of lines allowed per file (file-size-guard.sh)
+max_file_lines: 500
+
+# Comma-separated list of banned import/package patterns (import-guard.sh)
+banned_imports: "tailwindcss,moment,lodash"

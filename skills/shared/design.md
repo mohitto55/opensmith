@@ -1,0 +1,68 @@
+# 서브스킬: 기술 설계
+
+Feature PRD + 수집된 컨텍스트를 기반으로 기술 설계 문서를 생성합니다.
+
+## 입력
+
+`.execute/state.json`에서 읽기:
+- `feature_prd_path` — 세분화 PRD 경로
+- `feature_name` — 기능명 (kebab-case)
+- `memory_bank_context` — Memory Bank 검색 결과
+- `codebase_context` — 코드베이스 탐색 결과
+- `docs_context` — 문서 검색 결과
+
+## 실행
+
+1. Feature PRD 읽기 → 기능 요구사항, API 개략, 데이터 개략 추출
+2. 수집 컨텍스트 반영하여 아래 설계 문서 생성
+
+### 설계 문서 형식
+
+저장: `docs/prd/features/[feature_name]/design.md`
+
+```markdown
+# 기술 설계: [기능명]
+
+> Feature PRD: [feature_prd_path]
+> 작성일: YYYY-MM-DD
+
+## 0. Memory Bank 컨텍스트
+- **준수할 과거 결정**: [decision 팩트]
+- **알려진 위험**: [error 팩트]
+- **제약사항**: [constraint 팩트]
+
+## 1. 비기능 요구사항
+| 항목 | 목표 | 근거 |
+|------|------|------|
+| QPS | DAU × 사용률 / 86400 | [계산] |
+| 응답 시간 | P95 < Xms | [근거] |
+| 가용성 | 99.X% | [근거] |
+| 일관성 | 강한/최종 | [근거] |
+| 저장소 | 일일 데이터 × 보관 기간 | [계산] |
+
+## 2. API 설계
+| 메서드 | 경로 | Request | Response | 인증 |
+|--------|------|---------|----------|------|
+
+## 3. 데이터 모델
+### 새로운 모델 / 변경 모델 / 인덱스
+
+## 4. 프론트엔드 구조
+### 컴포넌트 트리 + 페이지 경로
+
+## 5. 백엔드 구조
+### 엔드포인트 + 서비스 + 모델 경로
+
+## 6. 구현 순서
+1. DB 모델 → 2. 서비스 → 3. API → 4. 타입 → 5. 컴포넌트 → 6. 테스트
+```
+
+3. `system-design-validator` 체크리스트 실행:
+   - QPS/저장소/비기능 정의됐는가?
+   - API/데이터 모델/컴포넌트 있는가?
+   - 캐시/일관성/최적화 고려됐는가?
+   - 장애 시나리오/보안 있는가?
+
+## 출력
+
+- `state.json` 업데이트: `design_path`, `current_step++`

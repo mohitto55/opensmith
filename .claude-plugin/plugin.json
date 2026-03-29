@@ -1,0 +1,52 @@
+{
+  "name": "opensmith",
+  "version": "1.0.0",
+  "description": "자율 자가개선 개발 아키텍처. PRD → 설계 → 구현 → QA → 배포 파이프라인 + 30 훅 + Memory Bank 시맨틱 검색.",
+  "author": {
+    "name": "OpenSmith",
+    "url": "https://github.com/your-username/opensmith"
+  },
+  "repository": "https://github.com/your-username/opensmith",
+  "license": "MIT",
+  "keywords": ["self-improving", "autonomous", "pipeline", "prd", "hooks", "memory-bank"],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "userConfig": {
+    "project_name": {
+      "description": "프로젝트 이름 (예: MyCoolApp)",
+      "sensitive": false
+    },
+    "frontend_framework": {
+      "description": "프론트엔드 프레임워크 (예: Next.js 14, React, Vue)",
+      "sensitive": false
+    },
+    "backend_framework": {
+      "description": "백엔드 프레임워크 (예: ASP.NET Core 8.0, FastAPI, Express)",
+      "sensitive": false
+    },
+    "database": {
+      "description": "데이터베이스 (예: MongoDB, PostgreSQL, MySQL)",
+      "sensitive": false
+    },
+    "frontend_build_cmd": {
+      "description": "프론트엔드 빌드 명령어 (예: npm run build)",
+      "sensitive": false
+    },
+    "backend_build_cmd": {
+      "description": "백엔드 빌드 명령어 (예: dotnet build)",
+      "sensitive": false
+    },
+    "k8s_namespace": {
+      "description": "Kubernetes 네임스페이스 (예: my-app-prod)",
+      "sensitive": false
+    },
+    "production_url": {
+      "description": "프로덕션 URL (예: https://myapp.com)",
+      "sensitive": false
+    },
+    "cloud_cli": {
+      "description": "클라우드 CLI (예: oci, aws, gcloud)",
+      "sensitive": false
+    }
+  }
+}

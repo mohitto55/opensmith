@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoopyEra — {{PROJECT_NAME}} Autonomous Self-Improving Architecture</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#0b0b14;--bg2:#10101c;--card:#151525;--card2:#1a1a2e;
+  --border:#222240;--border2:#2a2a48;
+  --t:#e8e8f0;--t2:#a0a0b8;--t3:#6a6a88;--t4:#44445a;
+  --blue:#6c7bff;--purple:#a855f7;--green:#22c55e;--orange:#f97316;
+  --red:#ef4444;--yellow:#eab308;--cyan:#06b6d4;--pink:#ec4899;
+}
+
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t);line-height:1.7;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(108,123,255,0.06),transparent);pointer-events:none;z-index:0;}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px;position:relative;z-index:1;}
+section{padding:100px 0 60px;}
+
+/* Typography */
+.label{font-size:11px;letter-spacing:6px;text-transform:uppercase;font-weight:600;text-align:center;margin-bottom:10px;}
+.title{font-size:40px;font-weight:800;text-align:center;letter-spacing:-1.5px;margin-bottom:12px;}
+.desc{text-align:center;color:var(--t2);max-width:640px;margin:0 auto 48px;font-size:15px;line-height:1.8;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;transition:border-color .3s;}
+.card:hover{border-color:var(--border2);}
+
+/* Tags */
+.tag{display:inline-block;font-size:11px;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,0.05);color:var(--t3);border:1px solid rgba(255,255,255,0.06);margin:2px 4px 2px 0;}
+
+/* Flow arrows */
+.flow-arrow{display:flex;align-items:center;justify-content:center;padding:16px 0;color:var(--t4);font-size:24px;letter-spacing:-2px;}
+.flow-arrow::before{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border));}
+.flow-arrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.flow-arrow span{padding:0 16px;font-size:13px;letter-spacing:1px;white-space:nowrap;}
+
+.flow-down{text-align:center;padding:20px 0;color:var(--t4);font-size:28px;}
+
+/* ================================ */
+/* HERO                             */
+/* ================================ */
+.hero{text-align:center;padding:140px 0 80px;}
+.hero h1{font-size:68px;font-weight:900;background:linear-gradient(135deg,#6c7bff 0%,#a855f7 50%,#6c7bff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;letter-spacing:-3px;}
+.hero .sub{font-size:16px;color:var(--t3);letter-spacing:5px;text-transform:uppercase;font-weight:300;margin-bottom:36px;}
+.hero .quote{font-size:22px;color:var(--orange);font-weight:700;margin-bottom:8px;}
+.hero .quote2{font-size:14px;color:var(--t4);font-style:italic;}
+
+/* Stats */
+.stats{display:flex;justify-content:center;gap:40px;padding:40px 0 20px;flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat .num{font-size:44px;font-weight:800;letter-spacing:-2px;}
+.stat .lbl{font-size:12px;color:var(--t3);margin-top:2px;}
+
+/* ================================ */
+/* HOW IT WORKS - 전체 플로우        */
+/* ================================ */
+.bigflow{display:flex;flex-direction:column;gap:0;}
+
+.bf-step{display:grid;grid-template-columns:60px 1fr;gap:0;position:relative;}
+.bf-num{display:flex;flex-direction:column;align-items:center;}
+.bf-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;position:relative;z-index:2;}
+.bf-line{flex:1;width:2px;margin:0 auto;min-height:20px;}
+.bf-content{padding:4px 0 40px 12px;}
+.bf-title{font-size:18px;font-weight:700;margin-bottom:6px;}
+.bf-desc{font-size:14px;color:var(--t2);line-height:1.8;}
+.bf-detail{margin-top:12px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--t2);line-height:1.8;}
+.bf-detail code{background:rgba(108,123,255,0.12);color:var(--blue);padding:2px 8px;border-radius:4px;font-size:12px;font-family:'Fira Code',monospace;}
+
+/* Step colors */
+.s-blue .bf-circle{background:var(--blue);}  .s-blue .bf-line{background:linear-gradient(var(--blue),var(--purple));}  .s-blue .bf-title{color:var(--blue);}
+.s-purple .bf-circle{background:var(--purple);}  .s-purple .bf-line{background:linear-gradient(var(--purple),var(--yellow));}  .s-purple .bf-title{color:var(--purple);}
+.s-yellow .bf-circle{background:var(--yellow);color:#000;}  .s-yellow .bf-line{background:linear-gradient(var(--yellow),var(--orange));}  .s-yellow .bf-title{color:var(--yellow);}
+.s-orange .bf-circle{background:var(--orange);}  .s-orange .bf-line{background:linear-gradient(var(--orange),var(--green));}  .s-orange .bf-title{color:var(--orange);}
+.s-green .bf-circle{background:var(--green);}  .s-green .bf-line{background:linear-gradient(var(--green),var(--pink));}  .s-green .bf-title{color:var(--green);}
+.s-pink .bf-circle{background:var(--pink);}  .s-pink .bf-line{background:linear-gradient(var(--pink),var(--cyan));}  .s-pink .bf-title{color:var(--pink);}
+.s-cyan .bf-circle{background:var(--cyan);}  .s-cyan .bf-line{background:var(--cyan);}  .s-cyan .bf-title{color:var(--cyan);}
+
+/* ================================ */
+/* 5 LAYERS                         */
+/* ================================ */
+.layers{display:flex;flex-direction:column;gap:10px;}
+.layer{display:grid;grid-template-columns:56px 110px 1fr auto;align-items:center;gap:16px;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:14px;transition:all .3s;}
+.layer:hover{background:var(--card2);transform:translateX(4px);}
+.layer-icon{font-size:26px;text-align:center;}
+.layer-name{font-size:16px;font-weight:700;}
+.layer-desc{font-size:13px;color:var(--t2);}
+.layer-tags{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* ================================ */
+/* CONTEXT STACK                    */
+/* ================================ */
+.ctx-stack{max-width:720px;margin:0 auto;position:relative;padding-left:52px;}
+.ctx{padding:18px 24px;border:1px solid var(--border);position:relative;transition:background .3s;}
+.ctx:hover{background:rgba(255,255,255,0.02);}
+.ctx:first-child{border-radius:14px 14px 0 0;}
+.ctx:last-child{border-radius:0 0 14px 14px;}
+.ctx+.ctx{border-top:none;}
+.ctx-n{position:absolute;left:-52px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;}
+.ctx-t{font-weight:700;font-size:14px;margin-bottom:3px;}
+.ctx-d{font-size:12px;color:var(--t2);line-height:1.7;}
+.ctx-badge{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:10px;padding:3px 12px;border-radius:12px;font-weight:700;letter-spacing:1px;}
+
+.ctx:nth-child(1){background:rgba(108,123,255,0.06);} .ctx:nth-child(1) .ctx-n{background:var(--blue);}
+.ctx:nth-child(2){background:rgba(168,85,247,0.04);} .ctx:nth-child(2) .ctx-n{background:var(--purple);}
+.ctx:nth-child(3){background:rgba(234,179,8,0.03);}  .ctx:nth-child(3) .ctx-n{background:var(--yellow);color:#000;}
+.ctx:nth-child(4){background:rgba(34,197,94,0.03);}  .ctx:nth-child(4) .ctx-n{background:var(--green);}
+.ctx:nth-child(5){background:rgba(249,115,22,0.03);} .ctx:nth-child(5) .ctx-n{background:var(--orange);}
+
+/* ================================ */
+/* ESCALATION                       */
+/* ================================ */
+.esc-flow{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;gap:0;align-items:stretch;}
+.esc-arrow{display:flex;align-items:center;justify-content:center;color:var(--t4);font-size:20px;}
+.esc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 24px;text-align:center;position:relative;overflow:hidden;}
+.esc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.esc:nth-child(1)::before{background:linear-gradient(90deg,var(--green),#4ade80);}
+.esc:nth-child(3)::before{background:linear-gradient(90deg,var(--blue),var(--purple));}
+.esc:nth-child(5)::before{background:linear-gradient(90deg,var(--red),#f87171);}
+.esc-num{font-size:56px;font-weight:900;line-height:1;margin-bottom:8px;}
+.esc:nth-child(1) .esc-num{color:var(--green);} .esc:nth-child(3) .esc-num{color:var(--blue);} .esc:nth-child(5) .esc-num{color:var(--red);}
+.esc-title{font-size:17px;font-weight:700;margin-bottom:14px;}
+.esc:nth-child(1) .esc-title{color:var(--green);} .esc:nth-child(3) .esc-title{color:var(--blue);} .esc:nth-child(5) .esc-title{color:var(--red);}
+.esc-desc{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:16px;min-height:60px;}
+.esc-badge{display:inline-block;font-size:11px;padding:5px 14px;border-radius:20px;font-weight:600;}
+.esc:nth-child(1) .esc-badge{background:rgba(34,197,94,0.1);color:var(--green);}
+.esc:nth-child(3) .esc-badge{background:rgba(108,123,255,0.1);color:var(--blue);}
+.esc:nth-child(5) .esc-badge{background:rgba(239,68,68,0.1);color:var(--red);}
+
+/* ================================ */
+/* HOOKS                            */
+/* ================================ */
+.hooks-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.hk{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;}
+.hk-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.hk-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hk-icon.hard{background:rgba(239,68,68,0.12);} .hk-icon.agent{background:rgba(249,115,22,0.12);} .hk-icon.soft{background:rgba(34,197,94,0.12);}
+.hk-name{font-weight:700;font-size:15px;}
+.hk-count{font-size:11px;color:var(--t3);}
+.hk-list{list-style:none;}
+.hk-list li{font-size:12px;color:var(--t2);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.02);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.hk-list li .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.hk-list.hard .dot{background:var(--red);} .hk-list.agent .dot{background:var(--orange);} .hk-list.soft .dot{background:var(--green);}
+.hk-list li strong{color:var(--t);}
+
+/* ================================ */
+/* MEMORY BANK                      */
+/* ================================ */
+.pipeline{margin-bottom:40px;}
+.pipe-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:14px;font-weight:600;}
+.pipe-row{display:flex;gap:0;align-items:stretch;}
+.pipe-node{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;text-align:center;flex:1;transition:all .3s;}
+.pipe-node:hover{border-color:var(--border2);transform:translateY(-2px);}
+.pipe-icon{font-size:26px;margin-bottom:6px;}
+.pipe-t{font-size:13px;font-weight:700;margin-bottom:4px;color:var(--t);}
+.pipe-d{font-size:11px;color:var(--t3);line-height:1.5;}
+.pipe-arr{display:flex;align-items:center;justify-content:center;width:36px;flex-shrink:0;color:var(--t4);font-size:16px;}
+.consol{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 28px;margin-top:20px;}
+.consol-title{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:14px;font-weight:600;}
+.consol-row{display:flex;gap:24px;flex-wrap:wrap;}
+.consol-item{display:flex;align-items:center;gap:8px;}
+.cb{font-size:10px;padding:3px 10px;border-radius:6px;font-weight:700;}
+.cb.dup{background:rgba(108,123,255,0.12);color:var(--blue);}
+.cb.con{background:rgba(239,68,68,0.12);color:var(--red);}
+.cb.evo{background:rgba(168,85,247,0.12);color:var(--purple);}
+.cb.ind{background:rgba(34,197,94,0.12);color:var(--green);}
+.consol-d{font-size:12px;color:var(--t3);}
+
+/* ================================ */
+/* TEAM TABLE                       */
+/* ================================ */
+.tm{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;font-size:13px;}
+.tm th{background:var(--card);padding:14px 12px;text-align:center;font-weight:600;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--border);}
+.tm td{padding:12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.02);color:var(--t3);}
+.tm tr:last-child td{border-bottom:none;}
+.tm .role{text-align:left;font-weight:600;color:var(--t);white-space:nowrap;}
+.ph{border-radius:8px;padding:5px 10px;font-size:11px;font-weight:600;display:inline-block;}
+.ph.o{background:rgba(249,115,22,0.08);color:var(--orange);}
+.ph.b{background:rgba(108,123,255,0.08);color:var(--blue);}
+.ph.p{background:rgba(168,85,247,0.08);color:var(--purple);}
+.ph.g{background:rgba(34,197,94,0.08);color:var(--green);}
+.ph.c{background:rgba(6,182,212,0.08);color:var(--cyan);}
+.ph.r{background:rgba(239,68,68,0.08);color:var(--red);}
+.ph.ship{background:var(--green);color:#000;font-weight:800;}
+
+/* ================================ */
+/* USER ROLE                        */
+/* ================================ */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:780px;margin:0 auto;}
+.role-card{border-radius:16px;padding:32px;border:1px solid;}
+.role-card.do{background:linear-gradient(180deg,rgba(34,197,94,0.06) 0%,transparent 100%);border-color:rgba(34,197,94,0.15);}
+.role-card.dont{background:linear-gradient(180deg,rgba(239,68,68,0.06) 0%,transparent 100%);border-color:rgba(239,68,68,0.15);}
+.role-card h3{font-size:18px;font-weight:700;margin-bottom:18px;}
+.role-card.do h3{color:var(--green);} .role-card.dont h3{color:var(--red);}
+.role-card ul{list-style:none;}
+.role-card li{font-size:14px;color:var(--t2);padding:5px 0;padding-left:18px;position:relative;}
+.role-card li::before{content:'•';position:absolute;left:0;font-size:16px;}
+.role-card.do li::before{color:var(--green);} .role-card.dont li::before{color:var(--red);}
+
+/* Footer */
+.footer{text-align:center;padding:60px 0;color:var(--t4);font-size:13px;border-top:1px solid var(--border);}
+.footer a{color:var(--blue);text-decoration:none;}
+
+/* Responsive */
+@media(max-width:768px){
+  .hero h1{font-size:40px;}
+  .title{font-size:28px;}
+  .esc-flow{grid-template-columns:1fr;gap:12px;}
+  .esc-arrow{transform:rotate(90deg);padding:8px 0;}
+  .hooks-grid{grid-template-columns:1fr;}
+  .roles{grid-template-columns:1fr;}
+  .pipe-row{flex-direction:column;}
+  .pipe-arr{width:auto;height:28px;transform:rotate(90deg);}
+  .layer{grid-template-columns:40px 80px 1fr;gap:10px;padding:16px;}
+  .layer-tags{display:none;}
+  .stats{gap:20px;}
+  .ctx-stack{padding-left:44px;}
+  .tm{font-size:11px;}
+  .bf-step{grid-template-columns:48px 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- HERO                                         -->
+<!-- ============================================ -->
+<section class="hero">
+<div class="wrap">
+  <h1>Loopy Era</h1>
+  <p class="sub">Autonomous Self-Improving Architecture</p>
+  <p class="quote">"가장 큰 병목은 사람이다."</p>
+  <p class="quote2">"사람은 방향을 정하고, 시스템이 스스로 만든다."</p>
+</div>
+</section>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="stat"><div class="num" style="color:var(--blue)">5</div><div class="lbl">레이어</div></div>
+    <div class="stat"><div class="num" style="color:var(--orange)">30</div><div class="lbl">훅</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">10</div><div class="lbl">자동 단계</div></div>
+    <div class="stat"><div class="num" style="color:var(--yellow)">6</div><div class="lbl">자가개선 루프</div></div>
+    <div class="stat"><div class="num" style="color:var(--purple)">2.6K</div><div class="lbl">팩트 (목표)</div></div>
+    <div class="stat"><div class="num" style="color:var(--cyan)">16</div><div class="lbl">스킬</div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- HOW IT WORKS — 전체 플로우 (가장 중요)        -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--blue)">How It Works</p>
+  <h2 class="title">전체 시스템 플로우</h2>
+  <p class="desc">사용자가 <code>/dev-cycle</code> 하나를 입력하면, 아래 10단계가 자동으로 실행됩니다.<br>사람이 개입하는 건 1번(방향 지시)과 4번(설계 승인)뿐입니다.</p>
+
+  <div class="bigflow">
+
+    <!-- Step 1 -->
+    <div class="bf-step s-blue">
+      <div class="bf-num"><div class="bf-circle">1</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">👤 사용자가 방향을 지시한다</div>
+        <div class="bf-desc">
+          사용자는 <strong>코드를 작성하지 않습니다.</strong> 목표만 전달합니다.<br>
+          예: <em>"/dev-cycle 채팅에 이미지 전송 기능 추가해줘"</em>
+        </div>
+        <div class="bf-detail">
+          사용자 메시지는 컨텍스트 스택의 <strong>가장 위(Layer 5)</strong>에 도착합니다.<br>
+          하지만 이미 Layer 1~4의 프로젝트 규칙, scaffold 패턴, 과거 팩트가 로딩된 상태입니다.<br>
+          → {{AI_MODEL}}는 짧은 지시만으로도 <strong>전체 맥락을 파악</strong>하고 작업을 시작합니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="bf-step s-purple">
+      <div class="bf-num"><div class="bf-circle">2</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">🧠 {{AI_MODEL}}가 컨텍스트를 조립한다</div>
+        <div class="bf-desc">
+          세션이 시작되면 <strong>SessionStart 훅 4개</strong>가 자동으로 실행되어 컨텍스트를 조립합니다.
+        </div>
+        <div class="bf-detail">
+          <strong>자동 주입되는 것들:</strong><br>
+          ① <code>CLAUDE.md</code> — 프로젝트 규칙, 빌드 커맨드, 기술 스택 (항상 로딩)<br>
+          ② <code>Skills/Scaffold</code> — frontend-patterns.md, backend-patterns.md, NEVER DO 규칙<br>
+          ③ <code>inject-context.sh</code> — Memory Bank에서 top-5 팩트 + pending 개선사항 주입<br>
+          ④ <code>session-continuity.sh</code> — 이전 세션의 WIP 커밋 메시지로 작업 이어가기<br>
+          ⑤ <code>worktree-status.sh</code> — 현재 활성 워크트리 목록<br><br>
+          → 사용자 메시지가 도착하기 <strong>전에</strong> 이미 풍부한 컨텍스트가 준비됨
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: PRD -->
+    <div class="bf-step s-yellow">
+      <div class="bf-num"><div class="bf-circle">3</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">📋 PRD를 확인/생성한다</div>
+        <div class="bf-desc">
+          <code>/dev-cycle</code>이 실행되면, 가장 먼저 <code>docs/prd/</code>에서 기존 PRD를 검색합니다.<br>
+          없으면 <strong>자동으로 PRD를 생성</strong>하고, 있으면 업데이트 필요 여부를 확인합니다.
+        </div>
+        <div class="bf-detail">
+          <strong>PRD 자동 생성 프로세스:</strong><br>
+          ① <code>docs/prd/</code> 디렉토리에서 기존 PRD 검색<br>
+          ② 없으면 → 사용자 요구사항 분석 → PRD 문서 자동 작성<br>
+          ③ 있으면 → 기존 PRD와 새 요구사항 diff → 업데이트 필요 시 수정<br><br>
+          PRD에는 <strong>문제 정의, 기능 요구사항(FR), 비기능 요구사항(NFR), 성공 지표</strong>가 포함됩니다.<br>
+          → 이 PRD가 이후 모든 단계의 <strong>진실의 원천(Single Source of Truth)</strong>이 됩니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Technical Design -->
+    <div class="bf-step s-orange">
+      <div class="bf-num"><div class="bf-circle">4</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">🏗️ 기술 설계 → 사용자 승인</div>
+        <div class="bf-desc">
+          PRD를 기반으로 <strong>기술 설계 문서</strong>를 작성하고, <code>system-design-validator</code>로 검증한 후<br>
+          <strong>사용자의 승인을 받습니다.</strong> 이것이 사용자가 개입하는 유일한 두 번째 지점입니다.
+        </div>
+        <div class="bf-detail">
+          <strong>기술 설계 프로세스:</strong><br>
+          ① <code>docs/design/</code> 에서 기존 설계 확인<br>
+          ② PRD의 FR/NFR → API 설계, 데이터 모델, 컴포넌트 구조 도출<br>
+          ③ <code>system-design-validator</code> 4단계 검증 (API 일관성, 보안, 확장성, 성능)<br>
+          ④ 사용자에게 설계 요약 제시 → <strong>승인 대기</strong><br><br>
+          <strong>승인 후에만</strong> 구현 단계(Step 5)로 진행합니다.<br>
+          → 잘못된 방향으로 코드를 작성하는 것을 <strong>사전에 방지</strong>합니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Implementation -->
+    <div class="bf-step s-green">
+      <div class="bf-num"><div class="bf-circle">5</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">📝 /agent-teams가 코드를 작성한다</div>
+        <div class="bf-desc">
+          승인된 설계를 기반으로 <strong>6개 역할 × 6 Phase</strong> 팀 오케스트레이터가 코드를 작성합니다.<br>
+          scaffold 규칙 + NEVER DO + Memory Bank 팩트를 참고하여 <strong>처음부터 올바른 패턴</strong>으로 작성.
+        </div>
+        <div class="bf-detail">
+          <strong>/agent-teams 오케스트레이터 발동:</strong><br>
+          6개 역할(설계자, DB 관리자, 프론트, 백엔드, QA, 팀 리더) × 6 Phase가 순차/병렬 실행<br><br>
+          <strong>Phase 0</strong> 분석 → <strong>Phase 1</strong> 설계 → <strong>Phase 2</strong> DB/타입 → <strong>Phase 3</strong> 구현(병렬) → <strong>Phase 4</strong> QA → <strong>Phase 5</strong> 배포<br><br>
+          프론트엔드 + 백엔드는 Phase 3에서 <strong>동시에 실행(Promise.all)</strong>되어 시간을 절약합니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="bf-step s-yellow">
+      <div class="bf-num"><div class="bf-circle">6</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">⚡ 훅이 자동으로 검증한다</div>
+        <div class="bf-desc">
+          코드가 작성될 때마다(Write/Edit) <strong>PreToolUse + PostToolUse 훅</strong>이 자동 실행됩니다.<br>
+          사람이 리뷰하기 전에 기계가 먼저 검증합니다.
+        </div>
+        <div class="bf-detail">
+          <strong>PreToolUse (작성 전 차단):</strong><br>
+          • NEVER DO 위반 → 즉시 차단<br>
+          • 보안 위반 (하드코딩 시크릿, wildcard CORS) → 즉시 차단<br>
+          • 금지 라이브러리 import → 즉시 차단<br>
+          • 파일 800줄 초과 → 즉시 차단<br><br>
+          <strong>PostToolUse (작성 후 가이드):</strong><br>
+          • 컴포넌트 패턴 위반 → 수정 가이드 주입<br>
+          • API 일관성 체크 → 경고<br>
+          • 타입 에러 감지 → 자동 수정 에이전트 제안<br>
+          • 성능 안티패턴 → 힌트 주입
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 7 -->
+    <div class="bf-step s-green">
+      <div class="bf-num"><div class="bf-circle">7</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">🔧 에러가 나면 자동으로 고친다</div>
+        <div class="bf-desc">
+          검증에서 에러가 발견되면 <strong>3단계 에스컬레이션</strong>이 자동으로 처리합니다.<br>
+          대부분 1~2단계에서 해결되며, 사람 개입은 극히 드뭅니다.
+        </div>
+        <div class="bf-detail">
+          <strong>1단계 — 소프트 알림</strong> (실패 1~2회)<br>
+          에러 메시지를 컨텍스트에 주입 → {{AI_MODEL}}가 보고 직접 수정<br><br>
+          <strong>2단계 — 에이전트 수정</strong> (실패 3~5회)<br>
+          독립 Opus 에이전트가 파일을 읽고, 에러를 분석하고, 자동 수정<br>
+          메인 작업과 <strong>병렬 실행</strong>이라 작업 흐름이 끊기지 않음<br><br>
+          <strong>3단계 — 강제 차단</strong> (실패 6회+)<br>
+          도구 실행 차단 + 텔레그램 알림 → 접근 방식 변경 요구<br>
+          <em>여기서만 사람이 개입합니다</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 8 -->
+    <div class="bf-step s-blue">
+      <div class="bf-num"><div class="bf-circle">8</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">🚀 빌드 검증 → 배포</div>
+        <div class="bf-desc">
+          코드가 검증을 통과하면 <strong>빌드 → OCI 업로드 → {{ORCHESTRATOR}} Pod 재시작 → 헬스체크</strong>까지 자동 실행.<br>
+          배포 실패 시 <code>deploy-fix-agent</code>가 자동으로 원인 분석 및 수정을 시도합니다.
+        </div>
+        <div class="bf-detail">
+          <strong>배포 파이프라인:</strong><br>
+          ① <code>{{BACKEND_FRAMEWORK}} build</code> + <code>npm run build</code> — 프론트/백엔드 빌드 검증<br>
+          ② <code>tar czf</code> → 아카이브 생성<br>
+          ③ <code>oci os object put</code> → OCI Object Storage 업로드<br>
+          ④ <code>{{ORCHESTRATOR}} rollout restart</code> → {{ORCHESTRATOR}} Pod 재시작<br>
+          ⑤ 헬스체크 → 서비스 정상 확인<br><br>
+          배포 실패 시 → <code>deploy-fix-agent</code> 자동 수정 → 재배포
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 9: QA -->
+    <div class="bf-step s-purple">
+      <div class="bf-num"><div class="bf-circle">9</div><div class="bf-line"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">🌐 /agent-browser가 실제 브라우저에서 QA 테스트</div>
+        <div class="bf-desc">
+          배포된 프로덕션 서버에 <strong>실제 브라우저(Headed mode)</strong>로 접속하여<br>
+          자동으로 기능을 테스트합니다. 사람이 직접 클릭해서 확인하지 않습니다.
+        </div>
+        <div class="bf-detail">
+          <strong>/agent-browser QA 프로세스:</strong><br>
+          ① <code>http://158.179.167.98</code> 프로덕션 서버 접속<br>
+          ② Headed 모드 — persistent 프로필로 로그인 상태 유지<br>
+          ③ PRD의 기능 요구사항(FR) 기반으로 테스트 시나리오 자동 생성<br>
+          ④ 스크린샷 캡처 + 결과 리포트 생성<br><br>
+          <strong>Stop 훅 (세션 종료 시 자동):</strong><br>
+          • <code>fact-extraction.sh</code> — 세션에서 의사결정/에러패턴 팩트 추출<br>
+          • <code>metrics-log.sh</code> — 빌드 횟수, 에러 수 등 세션 메트릭 기록<br>
+          • <code>wip-commit.sh</code> — 미커밋 변경이 있으면 WIP 커밋 자동 생성
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 10: Learn -->
+    <div class="bf-step s-orange">
+      <div class="bf-num"><div class="bf-circle">10</div><div class="bf-line" style="background:transparent;"></div></div>
+      <div class="bf-content">
+        <div class="bf-title">💎 학습하고 강화한다 — 그리고 다시 1번으로</div>
+        <div class="bf-desc">
+          추출된 팩트가 Memory Bank에 저장됩니다. Fix 커밋이 감지되면<br>
+          <strong>scaffold 파일에 새 NEVER DO 규칙이 자동 추가</strong>되어 같은 실수를 영원히 방지합니다.
+        </div>
+        <div class="bf-detail">
+          <strong>자가개선 루프 (6단계 순환):</strong><br>
+          ① <strong>코드 작성</strong> — Scaffold + Memory Bank 참고<br>
+          ② <strong>검증</strong> — 30개 훅이 자동 검사<br>
+          ③ <strong>자동 수정</strong> — 3단계 에스컬레이션으로 에러 해결<br>
+          ④ <strong>배포</strong> — Git → OCI → {{ORCHESTRATOR}} → 헬스체크<br>
+          ⑤ <strong>학습</strong> — Fix 커밋 감지 → "무엇이 문제였고 어떻게 해결했는지" 팩트 추출<br>
+          ⑥ <strong>강화</strong> — <code>never-do.md</code> AUTO-GENERATED 영역에 새 규칙 추가<br><br>
+          → 다음 세션부터 Layer 2(Scaffold)에 자동 반영<br>
+          → 다음 코드 작성 시 {{AI_MODEL}}가 강화된 규칙을 참조<br><br>
+          <strong>∞ 무한 루프</strong> — 이 사이클이 매 세션마다 반복되며 시스템이 점점 똑똑해집니다.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- 5 LAYERS                                     -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--purple)">아키텍처</p>
+  <h2 class="title">5개 레이어</h2>
+  <p class="desc">위 레이어일수록 사람에 가깝고, 아래 레이어일수록 자동화에 가깝습니다.<br>각 레이어는 독립적이지만 유기적으로 연결됩니다.</p>
+
+  <div class="layers">
+    <div class="layer">
+      <div class="layer-icon">👤</div>
+      <div class="layer-name" style="color:var(--orange)">사용자</div>
+      <div class="layer-desc">방향 설정, 피드백, 양질의 정보. HARD 차단 시에만 텔레그램 알림.</div>
+      <div class="layer-tags"><span class="tag">방향 설정자</span><span class="tag">실행자 아님</span></div>
+    </div>
+    <div class="layer">
+      <div class="layer-icon">🧠</div>
+      <div class="layer-name" style="color:var(--blue)">{{AI_MODEL}}</div>
+      <div class="layer-desc">Opus 메인 스레드 + 오케스트레이터 + 16개 스킬 + 전문 에이전트. bypassPermissions.</div>
+      <div class="layer-tags"><span class="tag">Opus 4.6</span><span class="tag">팀 오케스트레이터</span><span class="tag">7개 전문가</span></div>
+    </div>
+    <div class="layer">
+      <div class="layer-icon">⚡</div>
+      <div class="layer-name" style="color:var(--yellow)">훅</div>
+      <div class="layer-desc">11개 이벤트에 30개 훅. HARD 게이트 차단 + Agent 자동 수정 + SOFT 가이드 주입.</div>
+      <div class="layer-tags"><span class="tag">30 Hooks</span><span class="tag">11 Events</span><span class="tag">Agent + Command</span></div>
+    </div>
+    <div class="layer">
+      <div class="layer-icon">🧬</div>
+      <div class="layer-name" style="color:var(--purple)">메모리</div>
+      <div class="layer-desc">시맨틱 검색 2,600+ 팩트. 세션 상태 유지. scaffold → self-improve 순환.</div>
+      <div class="layer-tags"><span class="tag">Memory Bank</span><span class="tag">2,600+ Facts</span><span class="tag">50K+ Conversations</span></div>
+    </div>
+    <div class="layer">
+      <div class="layer-icon">🔧</div>
+      <div class="layer-name" style="color:var(--cyan)">인프라</div>
+      <div class="layer-desc">Git, npm/tsc/{{BACKEND_FRAMEWORK}}, SQLite + sqlite-vec, 텔레그램 봇, MCP 서버.</div>
+      <div class="layer-tags"><span class="tag">Git</span><span class="tag">SQLite</span><span class="tag">Telegram</span><span class="tag">MCP</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- CONTEXT STACK                                -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--cyan)">Context Assembly</p>
+  <h2 class="title">프롬프트 컨텍스트 스택</h2>
+  <p class="desc">사용자의 메시지는 이미 풍부한 컨텍스트 윈도우의 맨 위에 도착합니다.<br>아래 5개 레이어가 매 세션마다 자동으로 쌓입니다.</p>
+
+  <div class="ctx-stack">
+    <div class="ctx">
+      <span class="ctx-n">5</span>
+      <div class="ctx-t">👤 사용자 프롬프트</div>
+      <div class="ctx-d">사용자가 타이핑한 실제 메시지. 이미 Layer 1~4가 준비된 상태에서 도착.</div>
+      <span class="ctx-badge" style="background:var(--blue);color:#fff;">TOP</span>
+    </div>
+    <div class="ctx">
+      <span class="ctx-n">4</span>
+      <div class="ctx-t">🧬 Memory Bank</div>
+      <div class="ctx-d">시맨틱 검색으로 top-K 관련 과거 의사결정, 에러 패턴, 프로젝트 제약사항 주입.<br>384-dim embeddings · sqlite-vec cosine · FTS hybrid</div>
+      <span class="ctx-badge" style="background:rgba(168,85,247,0.15);color:var(--purple);">← feeds context</span>
+    </div>
+    <div class="ctx">
+      <span class="ctx-n">3</span>
+      <div class="ctx-t">⚡ 훅 주입</div>
+      <div class="ctx-d">SessionStart 시 inject-context.sh가 세션 연속성 노트, pending 개선 태스크, top 팩트를 자동 주입.</div>
+      <span class="ctx-badge" style="background:rgba(234,179,8,0.15);color:var(--yellow);">← auto-injected</span>
+    </div>
+    <div class="ctx">
+      <span class="ctx-n">2</span>
+      <div class="ctx-t">📋 Skills / Scaffold</div>
+      <div class="ctx-d">SKILL.md + NEVER DO 규칙 + 도메인 패턴. /self-improve로 fix 커밋마다 자동 성장.</div>
+      <span class="ctx-badge" style="background:rgba(34,197,94,0.15);color:var(--green);">← loaded at start</span>
+    </div>
+    <div class="ctx">
+      <span class="ctx-n">1</span>
+      <div class="ctx-t">📄 CLAUDE.md</div>
+      <div class="ctx-d">프로젝트 규칙, 빌드 커맨드, 스택 제약. 매 세션 영구 기준선.</div>
+      <span class="ctx-badge" style="background:rgba(249,115,22,0.15);color:var(--orange);">BASE</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- 3-STAGE ESCALATION                           -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--red)">에러 처리</p>
+  <h2 class="title">3단계 에스컬레이션</h2>
+  <p class="desc">코드에 에러가 있으면 시스템이 자동으로 단계를 올립니다.<br>3단계까지 사람 개입 불필요. 대부분 1단계에서 자동 해결됩니다.</p>
+
+  <div class="esc-flow">
+    <div class="esc">
+      <div class="esc-num">1</div>
+      <div class="esc-title">소프트 알림</div>
+      <div class="esc-desc">에러 메시지를 {{AI_MODEL}} 컨텍스트에 주입합니다. {{AI_MODEL}}가 에러를 인식하고 직접 수정합니다.</div>
+      <div class="esc-badge">자동 복구 가능</div>
+    </div>
+    <div class="esc-arrow">→</div>
+    <div class="esc">
+      <div class="esc-num">2</div>
+      <div class="esc-title">에이전트 수정</div>
+      <div class="esc-desc">독립 Opus 에이전트가 파일을 읽고, 에러를 분석하고, 수정을 적용합니다. 메인 작업과 병렬 실행.</div>
+      <div class="esc-badge">Opus 기반</div>
+    </div>
+    <div class="esc-arrow">→</div>
+    <div class="esc">
+      <div class="esc-num">3</div>
+      <div class="esc-title">강제 차단</div>
+      <div class="esc-desc">도구 실행을 차단합니다. 텔레그램으로 알림. "접근 방식 변경" 메시지. 카운터 리셋.</div>
+      <div class="esc-badge">사람 개입 필요</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- HOOKS                                        -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--yellow)">Guard Rails</p>
+  <h2 class="title">30개 훅 시스템</h2>
+  <p class="desc">11개 이벤트에 30개 훅이 매핑됩니다. 3종류의 훅이 각각 다른 방식으로 코드 품질을 보장합니다.</p>
+
+  <div class="hooks-grid">
+    <!-- HARD -->
+    <div class="hk">
+      <div class="hk-head">
+        <div class="hk-icon hard">🛑</div>
+        <div><div class="hk-name">HARD 게이트</div><div class="hk-count">8개 — 위반 시 <strong style="color:var(--red)">즉시 차단</strong></div></div>
+      </div>
+      <ul class="hk-list hard">
+        <li><span class="dot"></span><strong>typecheck-gate</strong> — tsc/{{BACKEND_FRAMEWORK}} 타입 체크</li>
+        <li><span class="dot"></span><strong>lint-gate</strong> — ESLint 린트 체크</li>
+        <li><span class="dot"></span><strong>scaffold-never-do</strong> — NEVER DO 규칙 위반</li>
+        <li><span class="dot"></span><strong>security-gate</strong> — 하드코딩 시크릿, wildcard CORS</li>
+        <li><span class="dot"></span><strong>import-guard</strong> — 금지 라이브러리 (react-color 등)</li>
+        <li><span class="dot"></span><strong>file-size-guard</strong> — 800줄 초과 차단</li>
+        <li><span class="dot"></span><strong>test-coverage-gate</strong> — 테스트 파일 존재 확인</li>
+        <li><span class="dot"></span><strong>docs-structure-gate</strong> — 문서 필수 섹션 검증</li>
+      </ul>
+    </div>
+    <!-- AGENT -->
+    <div class="hk">
+      <div class="hk-head">
+        <div class="hk-icon agent">🤖</div>
+        <div><div class="hk-name">Agent 훅</div><div class="hk-count">6개 — 에러 시 <strong style="color:var(--orange)">자동 수정</strong></div></div>
+      </div>
+      <ul class="hk-list agent">
+        <li><span class="dot"></span><strong>build-fix-agent</strong> — 빌드 실패 자동 수정</li>
+        <li><span class="dot"></span><strong>test-fix-agent</strong> — 테스트 실패 자동 수정</li>
+        <li><span class="dot"></span><strong>scaffold-fix-agent</strong> — scaffold 위반 재작성</li>
+        <li><span class="dot"></span><strong>type-fix-agent</strong> — 타입 에러 수정</li>
+        <li><span class="dot"></span><strong>deploy-fix-agent</strong> — {{ORCHESTRATOR}} 배포 실패 분석</li>
+        <li><span class="dot"></span><strong>merge-conflict-agent</strong> — 머지 충돌 자동 해결</li>
+      </ul>
+    </div>
+    <!-- SOFT -->
+    <div class="hk">
+      <div class="hk-head">
+        <div class="hk-icon soft">💡</div>
+        <div><div class="hk-name">SOFT 훅</div><div class="hk-count">16개 — <strong style="color:var(--green)">가이드 주입</strong></div></div>
+      </div>
+      <ul class="hk-list soft">
+        <li><span class="dot"></span><strong>inject-context</strong> — 세션 시작 팩트 주입</li>
+        <li><span class="dot"></span><strong>self-improve-check</strong> — 개선 태스크 알림</li>
+        <li><span class="dot"></span><strong>session-continuity</strong> — 이전 작업 복원</li>
+        <li><span class="dot"></span><strong>worktree-status</strong> — 워크트리 상태</li>
+        <li><span class="dot"></span><strong>change-summary</strong> — 변경 요약</li>
+        <li><span class="dot"></span><strong>error-pattern-warn</strong> — 에러 패턴 경고</li>
+        <li><span class="dot"></span><strong>component-pattern</strong> — 컴포넌트 가이드</li>
+        <li><span class="dot"></span><strong>api-consistency</strong> — API 일관성</li>
+        <li><span class="dot"></span><strong>db-schema-warn</strong> — DB 스키마 경고</li>
+        <li><span class="dot"></span><strong>deploy-checklist</strong> — 배포 전 체크리스트</li>
+        <li><span class="dot"></span><strong>perf-hint</strong> — 성능 안티패턴</li>
+        <li><span class="dot"></span><strong>dependency-alert</strong> — 의존성 경고</li>
+        <li><span class="dot"></span><strong>fact-extraction</strong> — 팩트 추출</li>
+        <li><span class="dot"></span><strong>wip-commit</strong> — WIP 커밋 자동 생성</li>
+        <li><span class="dot"></span><strong>metrics-log</strong> — 메트릭 기록</li>
+        <li><span class="dot"></span><strong>telegram-notify</strong> — 텔레그램 알림</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- MEMORY BANK                                  -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--purple)">Data Pipeline</p>
+  <h2 class="title">Memory Bank 데이터 흐름</h2>
+  <p class="desc">두 개의 병렬 파이프라인이 원시 대화를 검색 가능한 팩트로 변환합니다.</p>
+
+  <div class="pipeline">
+    <div class="pipe-label">파이프라인 1 — 대화 인덱싱</div>
+    <div class="pipe-row">
+      <div class="pipe-node"><div class="pipe-icon">📁</div><div class="pipe-t">대화</div><div class="pipe-d">JSONL files<br>~/.claude/projects/</div></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-node"><div class="pipe-icon">🔍</div><div class="pipe-t">파서</div><div class="pipe-d">parser.ts<br>user/assistant pairs</div></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-node"><div class="pipe-icon">🔢</div><div class="pipe-t">Embeddings</div><div class="pipe-d">384-dim vectors<br>all-MiniLM-L6-v2</div></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-node"><div class="pipe-icon">🗄️</div><div class="pipe-t">SQLite + vec</div><div class="pipe-d">exchanges table<br>vec_exchanges index</div></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-node"><div class="pipe-icon">🔎</div><div class="pipe-t">Semantic Search</div><div class="pipe-d">cosine similarity<br>FTS hybrid</div></div>
+    </div>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-label">파이프라인 2 — 팩트 추출</div>
+    <div class="pipe-row">
+      <div class="pipe-node"><div class="pipe-icon">🔚</div><div class="pipe-t">Session End</div><div class="pipe-d">Stop hook<br>triggers extraction</div></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-node"><div class="pipe-icon">🧠</div><div class="pipe-t">Fact Extraction</div><div class="pipe-d">Haiku LLM<br>decisions/patterns</div></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-node"><div class="pipe-icon">🔄</div><div class="pipe-t">통합</div><div class="pipe-d">dedup / contradict<br>/ evolve / keep</div></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-node"><div class="pipe-icon">💎</div><div class="pipe-t">Facts DB</div><div class="pipe-d">2,600+ facts<br>vec_facts index</div></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-node"><div class="pipe-icon">🌐</div><div class="pipe-t">Ontology</div><div class="pipe-d">domains / categories<br>INFLUENCES / SUPPORTS</div></div>
+    </div>
+  </div>
+
+  <div class="consol">
+    <div class="consol-title">Consolidation Relations</div>
+    <div class="consol-row">
+      <div class="consol-item"><span class="cb dup">DUPLICATE</span><span class="consol-d">merge into one</span></div>
+      <div class="consol-item"><span class="cb con">CONTRADICTION</span><span class="consol-d">replace old</span></div>
+      <div class="consol-item"><span class="cb evo">EVOLUTION</span><span class="consol-d">update + track history</span></div>
+      <div class="consol-item"><span class="cb ind">INDEPENDENT</span><span class="consol-d">keep both</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- TEAM ORCHESTRATOR                            -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--orange)">Team Execution</p>
+  <h2 class="title">/team 오케스트레이터 흐름</h2>
+  <p class="desc">6개 역할이 6개 Phase를 순차/병렬로 실행합니다.<br>프론트엔드 + 백엔드는 Phase 3에서 동시에 실행되어 시간을 절약합니다.</p>
+
+  <table class="tm">
+    <thead>
+      <tr>
+        <th style="text-align:left;width:130px;">역할</th>
+        <th>Phase 0<br><span style="font-weight:400">분석</span></th>
+        <th>Phase 1<br><span style="font-weight:400">설계</span></th>
+        <th>Phase 2<br><span style="font-weight:400">DB</span></th>
+        <th>Phase 3<br><span style="font-weight:400">구현</span></th>
+        <th>Phase 4<br><span style="font-weight:400">QA</span></th>
+        <th>Phase 5<br><span style="font-weight:400">배포</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="role">🎯 <span style="color:var(--orange)">팀 리더</span></td>
+        <td><span class="ph o">Orchestrate</span></td>
+        <td><span class="ph o">Coordinate</span></td>
+        <td><span class="ph o">Monitor</span></td>
+        <td><span class="ph o">Coordinate</span></td>
+        <td><span class="ph o">Review</span></td>
+        <td><span class="ph ship">Ship ✓</span></td>
+      </tr>
+      <tr>
+        <td class="role">🏗️ 설계자</td>
+        <td><span class="ph b">Brief</span></td>
+        <td><span class="ph p">설계</span></td>
+        <td></td><td></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td class="role">🗄️ DB 관리자</td>
+        <td></td>
+        <td><span class="ph b">Schema</span></td>
+        <td><span class="ph p">Migrate+RLS</span></td>
+        <td></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td class="role">🎨 프론트엔드</td>
+        <td></td><td></td>
+        <td><span class="ph b">Types</span></td>
+        <td><span class="ph c">UI Components</span></td>
+        <td></td><td></td>
+      </tr>
+      <tr>
+        <td class="role">⚙️ 백엔드</td>
+        <td></td><td></td>
+        <td><span class="ph g">API Spec</span></td>
+        <td><span class="ph g">API Endpoints</span></td>
+        <td></td><td></td>
+      </tr>
+      <tr>
+        <td class="role">✅ QA</td>
+        <td></td><td></td><td></td><td></td>
+        <td><span class="ph r">L0-L5 Tests</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="text-align:center;margin-top:16px;font-size:12px;color:var(--t3);">프론트엔드 + 백엔드는 Phase 3에서 Promise.all() 병렬 실행</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- DEV-CYCLE FULL WORKFLOW                      -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--blue)">/dev-cycle</p>
+  <h2 class="title">PRD 기반 전체 개발 사이클</h2>
+  <p class="desc"><code>/dev-cycle {기능명}</code> 하나의 명령으로 PRD 확인부터 QA까지 자동 실행됩니다.<br>각 단계는 이전 단계의 산출물을 입력으로 받아 체인처럼 연결됩니다.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+    <div class="card" style="border-left:3px solid var(--blue);">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:8px;">Step 0 — PRD</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;">요구사항 문서 확인/생성</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        <code>docs/prd/</code> 검색 → 없으면 자동 생성<br>
+        문제 정의 · FR/NFR · 성공 지표 · 범위<br>
+        <span style="color:var(--t3);">산출물: PRD 문서</span>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--purple);">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);font-weight:600;margin-bottom:8px;">Step 1 — Design</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;">기술 설계 + 검증</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        PRD → API 설계, 데이터 모델, 컴포넌트 구조<br>
+        <code>system-design-validator</code> 4단계 검증<br>
+        <span style="color:var(--t3);">산출물: 설계 문서</span>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--yellow);">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:600;margin-bottom:8px;">Step 2 — Approval</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;">👤 사용자 승인</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        설계 요약 제시 → 사용자 승인 대기<br>
+        <strong>유일한 사람 개입 지점</strong><br>
+        <span style="color:var(--t3);">게이트: 승인 없으면 구현 불가</span>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--green);">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:8px;">Step 3 — Implement</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;">/agent-teams 실행</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        6역할 × 6Phase 팀 오케스트레이터<br>
+        Phase 3에서 FE+BE <strong>병렬 실행</strong><br>
+        <span style="color:var(--t3);">산출물: 구현 코드</span>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--orange);">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:600;margin-bottom:8px;">Step 4 — Build</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;">빌드 검증</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        <code>{{BACKEND_FRAMEWORK}} build</code> + <code>npm run build</code><br>
+        실패 시 → <code>build-fix-agent</code> 자동 수정<br>
+        <span style="color:var(--t3);">게이트: 빌드 통과 필수</span>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--cyan);">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);font-weight:600;margin-bottom:8px;">Step 5 — Deploy</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;">OCI + {{ORCHESTRATOR}} 배포</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        tar → OCI Object Storage → {{ORCHESTRATOR}} restart<br>
+        실패 시 → <code>deploy-fix-agent</code> 자동 분석<br>
+        <span style="color:var(--t3);">산출물: 프로덕션 배포</span>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--pink);grid-column:1/-1;">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--pink);font-weight:600;margin-bottom:8px;">Step 6 — QA + Report</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;">/agent-browser QA → dev-progress.md 업데이트 → 완료 보고</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        실제 브라우저로 프로덕션 테스트 → 스크린샷 → PRD/설계 문서 링크 포함 완료 리포트 → <code>docs/dev-progress.md</code> 자동 업데이트
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- SELF-IMPROVEMENT LOOP                        -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--pink)">∞ Infinite Loop</p>
+  <h2 class="title">자가개선 루프 (6단계)</h2>
+  <p class="desc">매 세션마다 자동으로 돌아가는 무한 개선 루프입니다.<br>Fix 커밋이 감지될 때마다 시스템이 스스로 더 강해집니다.</p>
+
+  <div style="display:flex;flex-direction:column;gap:0;max-width:720px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      <div class="card" style="text-align:center;border-top:3px solid var(--blue);">
+        <div style="font-size:28px;margin-bottom:6px;">✍️</div>
+        <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px;">1. 코드 작성</div>
+        <div style="font-size:11px;color:var(--t3);">Scaffold + Facts 참조</div>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--yellow);">
+        <div style="font-size:28px;margin-bottom:6px;">🔍</div>
+        <div style="font-size:13px;font-weight:700;color:var(--yellow);margin-bottom:4px;">2. 검증</div>
+        <div style="font-size:11px;color:var(--t3);">30개 훅 자동 검사</div>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--orange);">
+        <div style="font-size:28px;margin-bottom:6px;">🔧</div>
+        <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px;">3. 자동 수정</div>
+        <div style="font-size:11px;color:var(--t3);">3단계 에스컬레이션</div>
+      </div>
+    </div>
+    <div class="flow-down">↓</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      <div class="card" style="text-align:center;border-top:3px solid var(--green);">
+        <div style="font-size:28px;margin-bottom:6px;">🚀</div>
+        <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;">4. 배포</div>
+        <div style="font-size:11px;color:var(--t3);">Git → OCI → {{ORCHESTRATOR}}</div>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--purple);">
+        <div style="font-size:28px;margin-bottom:6px;">🧠</div>
+        <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:4px;">5. 학습</div>
+        <div style="font-size:11px;color:var(--t3);">Fix → Fact 추출</div>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--red);">
+        <div style="font-size:28px;margin-bottom:6px;">💪</div>
+        <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:4px;">6. 강화</div>
+        <div style="font-size:11px;color:var(--t3);">NEVER DO 자동 추가</div>
+      </div>
+    </div>
+    <div class="flow-down" style="font-size:16px;color:var(--t3);">↻ 다시 1번으로 — 매 세션마다 반복</div>
+  </div>
+
+  <div class="card" style="margin-top:32px;">
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px;">자가개선 상세 메커니즘</div>
+    <div style="font-size:12px;color:var(--t2);line-height:1.9;">
+      <strong style="color:var(--orange);">Fix 커밋 감지</strong> → Haiku LLM이 "무엇이 문제였고 어떻게 해결했는지" 팩트 추출<br>
+      → <code style="background:rgba(108,123,255,0.12);color:var(--blue);padding:2px 8px;border-radius:4px;font-size:11px;">never-do.md</code>의 <strong>AUTO-GENERATED 영역</strong>에 새 규칙 자동 추가<br>
+      → 다음 세션부터 Layer 2(Scaffold)에 반영 → {{AI_MODEL}}가 강화된 규칙으로 코드 작성<br>
+      → <strong>같은 실수가 두 번 다시 발생하지 않음</strong>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px;">
+    <div style="text-align:center;">
+      <div style="font-size:28px;font-weight:800;color:var(--green);">>80%</div>
+      <div style="font-size:11px;color:var(--t3);">자동 에러 수정률</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:28px;font-weight:800;color:var(--blue);"><5%</div>
+      <div style="font-size:11px;color:var(--t3);">사람 에스컬레이션률</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:28px;font-weight:800;color:var(--purple);"><10%</div>
+      <div style="font-size:11px;color:var(--t3);">패턴 재위반률</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:28px;font-weight:800;color:var(--orange);">>90%</div>
+      <div style="font-size:11px;color:var(--t3);">빌드 성공률</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- WORKTREE MANAGEMENT                          -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--cyan)">Isolation</p>
+  <h2 class="title">워크트리 자동화</h2>
+  <p class="desc">각 기능 개발은 독립된 워크트리에서 진행됩니다.<br>메인 브랜치 오염 없이 병렬 작업이 가능하고, WIP 커밋으로 세션 간 연속성을 보장합니다.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+    <div class="card">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);font-weight:600;margin-bottom:10px;">워크트리 생성</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.8;">
+        <code style="background:rgba(6,182,212,0.12);color:var(--cyan);padding:2px 8px;border-radius:4px;font-size:12px;">claude -w</code> → 자동으로 워크트리 생성<br>
+        독립 물리 폴더 → 메인 브랜치와 완전 분리<br>
+        여러 기능을 <strong>동시에 병렬 개발</strong> 가능
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:600;margin-bottom:10px;">WIP 자동 커밋</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.8;">
+        세션 종료 시 Stop 훅 → <code style="background:rgba(234,179,8,0.12);color:var(--yellow);padding:2px 8px;border-radius:4px;font-size:12px;">wip-commit.sh</code><br>
+        변경 감지 → 요약 + <strong>의사결정 히스토리</strong> 포함<br>
+        다음 세션에서 <code>session-continuity.sh</code>가 복원
+      </div>
+    </div>
+    <div class="card" style="grid-column:1/-1;">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:10px;">/merge_worktree — 스쿼시 머지</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.8;">
+        ① 미커밋 변경 확인 → WIP 커밋 생성 (필요 시)<br>
+        ② <code>git checkout main</code> → feature 브랜치에서 <strong>스쿼시 머지</strong><br>
+        ③ WIP 의사결정 히스토리로 <strong>충돌 자동 해결</strong><br>
+        ④ 모든 WIP 커밋을 합쳐 <strong>깨끗한 커밋 메시지</strong> 생성<br>
+        ⑤ 워크트리 제거 + 브랜치 삭제 (선택)
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============================================ -->
+<!-- USER ROLE                                    -->
+<!-- ============================================ -->
+<section>
+<div class="wrap">
+  <p class="label" style="color:var(--green)">사용자의 역할</p>
+  <h2 class="title">방향 설정자, 실행자가 아닌</h2>
+  <div class="roles">
+    <div class="role-card do">
+      <h3>✅ 하는 일</h3>
+      <ul>
+        <li>방향과 목표 설정</li>
+        <li>양질의 피드백 제공</li>
+        <li>정보 제공 (아티클, 레포)</li>
+        <li>텔레그램 알림 대응</li>
+        <li>self-improve 제안 검토</li>
+      </ul>
+    </div>
+    <div class="role-card dont">
+      <h3>❌ 안 하는 일</h3>
+      <ul>
+        <li>코드 작성</li>
+        <li>스킬 생성 (스킬이 스킬을 만듦)</li>
+        <li>버그 수정 (3단계가 처리)</li>
+        <li>테스트 실행 (훅이 자동 검증)</li>
+        <li>도구 실행 승인</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <p style="margin-bottom:8px;font-size:16px;font-weight:600;color:var(--t2);">{{PROJECT_NAME}} × LoopyEra</p>
+    <p>Built with Claude Code (Opus 4.6) · 2026</p>
+    <p style="margin-top:8px;"><a href="./prd.md">PRD</a> · <a href="./architecture-5layer.md">5-Layer</a> · <a href="./hook-system.md">Hook System</a> · <a href="./memory-bank.md">Memory Bank</a> · <a href="./self-improvement-loop.md">Self-Improve</a> · <a href="./worktree-management.md">Worktree</a> · <a href="./team-orchestrator.md">Team</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

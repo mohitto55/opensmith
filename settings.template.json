@@ -1,0 +1,183 @@
+{
+  "_comment": "LoopyEra settings.json template. Replace {{PROJECT_DIR}} with your project's absolute path.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "_comment": "SOFT: Load project context (CLAUDE.md, recent facts, environment info) into the session",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/inject-context.sh"
+          }
+        ]
+      },
+      {
+        "_comment": "SOFT: Check for pending self-improvement suggestions from previous sessions",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/self-improve-check.sh"
+          }
+        ]
+      },
+      {
+        "_comment": "SOFT: Restore session continuity -- resume from where the last session left off",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/session-continuity.sh"
+          }
+        ]
+      },
+      {
+        "_comment": "SOFT: Report git worktree and branch status at session start",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/worktree-status.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "_comment": "HARD: Block forbidden code patterns defined in never-do.md (exit 2 = block)",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/hard/scaffold-never-do.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "_comment": "HARD: Block hardcoded secrets, tokens, passwords, and API keys",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/hard/security-gate.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "_comment": "HARD: Block banned imports and dependencies",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/hard/import-guard.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "_comment": "HARD: Block files that exceed the maximum line count ({{MAX_FILE_LINES}} lines)",
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/hard/file-size-guard.sh \"$TOOL_INPUT\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "_comment": "SOFT: Suggest component and code structure improvements",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/component-pattern.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "_comment": "SOFT: Warn about API naming or endpoint inconsistencies",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/api-consistency.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "_comment": "SOFT: Warn when database schema or model changes are detected",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/db-schema-warn.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "_comment": "SOFT: Suggest performance improvements (N+1 queries, missing indexes, etc.)",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/perf-hint.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "_comment": "AGENT: Auto-fix scaffold pattern violations detected by PostToolUse checks",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/agent/scaffold-fix-agent.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "_comment": "AGENT: Auto-fix type errors in written files",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/agent/type-fix-agent.sh \"$TOOL_INPUT\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "_comment": "SOFT: Extract facts and learnings from the session for future reference",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/fact-extraction.sh"
+          }
+        ]
+      },
+      {
+        "_comment": "SOFT: Log session metrics (files changed, errors encountered, duration)",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/metrics-log.sh"
+          }
+        ]
+      },
+      {
+        "_comment": "SOFT: Auto-commit work-in-progress changes with a WIP prefix",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/wip-commit.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
