@@ -65,13 +65,13 @@ for item in report.get('items', []):
 fi
 
 # 미해결 이슈 체크
-ISSUES_FILE=".execute/issues.json"
+ISSUES_FILE=".opensmith/bugs.json"
 if [ -f "$ISSUES_FILE" ]; then
   OPEN_ISSUES=$(python3 -c "
 import json
 try:
     data = json.load(open('$ISSUES_FILE'))
-    opens = [i for i in data.get('issues', []) if i.get('status') == 'open']
+    opens = [i for i in data.get('bugs', []) if i.get('status') == 'open']
     print(len(opens))
 except:
     print(0)
@@ -80,11 +80,11 @@ except:
   if [ "$OPEN_ISSUES" != "0" ] && [ -n "$OPEN_ISSUES" ]; then
     echo "BLOCK"
     echo ""
-    echo "미해결 이슈가 ${OPEN_ISSUES}개 있습니다. 이슈 해결 후 배포하세요."
+    echo "미해결 버그가 ${OPEN_ISSUES}개 있습니다. 버그 해결 후 배포하세요."
     python3 -c "
 import json
 data = json.load(open('$ISSUES_FILE'))
-for i in data.get('issues', []):
+for i in data.get('bugs', []):
     if i.get('status') == 'open':
         print(f\"  OPEN: {i.get('id', '?')} — {i.get('description', '')}\")
 " 2>/dev/null
@@ -92,5 +92,5 @@ for i in data.get('issues', []):
   fi
 fi
 
-# 보안 15/15 PASS + 미해결 이슈 0개 — 배포 허용
+# 보안 15/15 PASS + 미해결 버그 0개 — 배포 허용
 exit 0
