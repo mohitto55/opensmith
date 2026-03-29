@@ -23,6 +23,8 @@ Phase 3: 반복 심화 — 답변 기반 추가 질문 (최대 3라운드)
 Phase 4: PRD 생성 — docs/prd/system-prd.md 작성
        ↓
 Phase 5: 검토 및 확정 — 사용자 확인 후 최종 저장
+       ↓
+Phase 6: 프로젝트 설정 자동 생성 — PRD Section 6 기반으로 환경 구성
 ```
 
 ---
@@ -245,7 +247,88 @@ PRD를 작성했습니다. 검토해주세요:
 
 ### 확인 시
 - 상태를 `Approved`로 변경
-- 기능 목록(Section 9)에 나열된 각 기능에 대해: "세분화 PRD가 필요하면 `/execute [기능명]` 실행 시 자동 생성됩니다" 안내
+- Phase 6으로 진행
+
+---
+
+## Phase 6: 프로젝트 설정 자동 생성
+
+PRD가 확정되면, Section 6(기술 제약)을 기반으로 프로젝트 개발 환경을 자동 구성합니다.
+**이 단계는 최초 PRD 생성 시에만 실행됩니다.** (`.opensmith/config.json`이 이미 있으면 스킵)
+
+### 6-1. `.opensmith/config.json` 생성
+
+PRD Section 6의 기술 스택 + 라운드 2 답변을 종합:
+
+```json
+{
+  "project_name": "[PRD에서 추출]",
+  "tech_stack": {
+    "frontend": "[PRD Section 6]",
+    "backend": "[PRD Section 6]",
+    "database": "[PRD Section 6]",
+    "infra": "[PRD Section 6]"
+  },
+  "commands": {
+    "frontend_build": "[스택에 맞는 빌드 명령어]",
+    "frontend_dev": "[스택에 맞는 개발 서버 명령어]",
+    "backend_build": "[스택에 맞는 빌드 명령어]",
+    "backend_run": "[스택에 맞는 실행 명령어]"
+  },
+  "deploy": {
+    "cloud_cli": "[클라우드 CLI 또는 null]",
+    "k8s_namespace": "[네임스페이스 또는 null]",
+    "production_url": "[URL 또는 null]"
+  },
+  "github": {
+    "repo": "[현재 git remote 자동 감지]",
+    "branch_strategy": "trunk-based"
+  }
+}
+```
+
+**자동 감지 항목**:
+- `git remote -v` → GitHub 레포 URL
+- 프론트엔드 스택 → package.json 존재 여부, framework 감지
+- 백엔드 스택 → *.csproj, requirements.txt, go.mod 등 감지
+
+**사용자에게 확인 안 되는 항목은 질문**:
+```
+프로젝트 설정을 구성합니다. 몇 가지 확인이 필요합니다:
+
+1. 배포 환경이 있나요? (K8s, Docker Compose, Vercel, 없음 등)
+2. CI/CD를 사용하나요? (GitHub Actions, 없음 등)
+3. 프로덕션 URL이 있나요? (없으면 나중에 설정 가능)
+```
+
+### 6-2. scaffold 패턴 파일 초기화
+
+기술 스택에 맞는 패턴 파일을 프로젝트 `.claude/skills/`에 생성:
+
+```
+스택이 Next.js → frontend-patterns.md에 App Router, RSC 패턴
+스택이 React SPA → frontend-patterns.md에 React Router, SPA 패턴
+스택이 ASP.NET → backend-patterns.md에 Minimal API 패턴
+스택이 FastAPI → backend-patterns.md에 Router, Dependency Injection 패턴
+```
+
+생성 파일:
+- `.claude/skills/frontend-patterns.md` — 스택 맞춤 프론트엔드 패턴
+- `.claude/skills/backend-patterns.md` — 스택 맞춤 백엔드 패턴
+- `.claude/skills/never-do.md` — 기본 금지 규칙 + 스택별 금지 규칙
+
+### 6-3. 완료 안내
+
+```
+프로젝트 설정이 완료되었습니다:
+
+📋 PRD: docs/prd/system-prd.md
+⚙️ 설정: .opensmith/config.json
+📐 scaffold: .claude/skills/frontend-patterns.md, backend-patterns.md, never-do.md
+
+이제 /opensmith:execute [기능명] 으로 기능 구현을 시작할 수 있습니다.
+기능 목록은 PRD Section 9를 참고하세요.
+```
 
 ---
 
@@ -255,6 +338,10 @@ PRD를 작성했습니다. 검토해주세요:
 |--------|------|
 | 시스템 PRD | `docs/prd/system-prd.md` |
 | 기능 PRD (개별) | `docs/prd/features/[기능명].md` |
+| 프로젝트 설정 | `.opensmith/config.json` |
+| 프론트엔드 패턴 | `.claude/skills/frontend-patterns.md` |
+| 백엔드 패턴 | `.claude/skills/backend-patterns.md` |
+| 금지 규칙 | `.claude/skills/never-do.md` |
 
 ---
 

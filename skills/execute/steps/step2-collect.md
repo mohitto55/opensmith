@@ -1,6 +1,6 @@
-# Step 2: 관련 자료 수집 (3-소스 병렬)
+# Step 2: 관련 자료 수집 (4-소스 병렬)
 
-핵심 차별화 스텝. Memory Bank + 코드베이스 + 문서를 병렬 검색합니다.
+핵심 차별화 스텝. Memory Bank + 코드베이스 + 문서 + GitHub를 병렬 검색합니다.
 
 ## 소스 A: Memory Bank 시맨틱 검색
 
@@ -49,6 +49,33 @@ Agent(subagent_type="Explore", prompt="
 - .claude/skills/never-do.md
 ```
 
+## 소스 D: GitHub 컨텍스트
+
+`.opensmith/config.json`에서 GitHub 레포 정보를 읽고 관련 PR/이슈를 검색합니다.
+
+```bash
+# 관련 PR 검색 (머지된 것 포함)
+gh pr list --search "$FEATURE_ARGS" --state all --limit 10 --json title,body,url,state,reviews
+
+# 관련 이슈 검색
+gh issue list --search "$FEATURE_ARGS" --state all --limit 10 --json title,body,url,labels
+
+# 최근 머지된 PR의 리뷰 코멘트 (관련 PR이 있을 때)
+gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --jq '.[].body'
+
+# 현재 열린 PR 확인 (충돌 가능성 파악)
+gh pr list --state open --json title,headRefName,baseRefName
+```
+
+GitHub CLI(`gh`)가 없거나 인증 안 되어 있으면 → 경고 출력 후 스킵
+
+### 활용 매핑
+| GitHub 소스 | 반영처 |
+|-------------|--------|
+| 과거 PR 리뷰 코멘트 | Step 3 설계 주의사항 (리뷰어 피드백 반영) |
+| 관련 이슈 | Step 1 세분화 PRD 보강 (요구사항 디테일) |
+| 열린 PR | Step 5 구현 시 충돌 방지 |
+
 ## 결과 통합
 
 수집 결과를 `.execute/state.json`에 저장:
@@ -69,6 +96,12 @@ Agent(subagent_type="Explore", prompt="
   "docs_context": {
     "architecture": "...",
     "scaffold_rules": "..."
+  },
+  "github_context": {
+    "related_prs": [...],
+    "related_issues": [...],
+    "review_comments": [...],
+    "open_prs": [...]
   },
   "current_step": 3
 }
