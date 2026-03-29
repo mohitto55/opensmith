@@ -101,11 +101,29 @@ execute 파이프라인 안팎 모두에서 사용 가능합니다.
 ...
 ```
 
+## 알림 연동
+
+버그 등록/해결 시 자동으로 알림을 발송합니다 (Slack/Discord/Telegram 설정 시):
+
+```bash
+# 버그 등록 시
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event bug_found --message "BUG-001 [severity]: [설명]"
+
+# critical/high 버그 등록 시
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event bug_found --message "🚨 Critical Bug: BUG-001 [설명] — 즉시 수정 필요"
+
+# 버그 해결 시
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event bug_fixed --message "BUG-001 해결됨: [설명]"
+
+# 리포트 생성 시
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event bug_report --message "Bug Report: Open N개 (critical: N, high: N) / Fixed: N개"
+```
+
 ## 자동 연동
 
 ### execute 파이프라인과 연동
 
-step7(QA)에서 버그 발견 시 **자동으로 bugs.json에 기록**됩니다.
+step7(QA)에서 버그 발견 시 **자동으로 bugs.json에 기록 + 알림 발송**됩니다.
 
 ### step0에서 미해결 버그 확인
 

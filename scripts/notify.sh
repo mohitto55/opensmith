@@ -46,6 +46,9 @@ case $EVENT in
   escalation)      EMOJI="🚨"; COLOR="#ff0000"; TITLE="에스컬레이션" ;;
   feature_done)    EMOJI="🎉"; COLOR="#36a64f"; TITLE="기능 구현 완료" ;;
   pipeline_done)   EMOJI="🏁"; COLOR="#36a64f"; TITLE="전체 파이프라인 완료" ;;
+  bug_found)       EMOJI="🐞"; COLOR="#ff6600"; TITLE="버그 발견" ;;
+  bug_fixed)       EMOJI="🔧"; COLOR="#36a64f"; TITLE="버그 해결" ;;
+  bug_report)      EMOJI="📋"; COLOR="#439FE0"; TITLE="버그 리포트" ;;
   *)               EMOJI="📢"; COLOR="#439FE0"; TITLE="알림" ;;
 esac
 
