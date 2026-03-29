@@ -13,39 +13,57 @@
   "hooks": "./hooks/hooks.json",
   "userConfig": {
     "project_name": {
+      "title": "프로젝트 이름",
       "description": "프로젝트 이름 (예: MyCoolApp)",
+      "type": "string",
       "sensitive": false
     },
     "frontend_framework": {
+      "title": "프론트엔드 프레임워크",
       "description": "프론트엔드 프레임워크 (예: Next.js 14, React, Vue)",
+      "type": "string",
       "sensitive": false
     },
     "backend_framework": {
+      "title": "백엔드 프레임워크",
       "description": "백엔드 프레임워크 (예: ASP.NET Core 8.0, FastAPI, Express)",
+      "type": "string",
       "sensitive": false
     },
     "database": {
+      "title": "데이터베이스",
       "description": "데이터베이스 (예: MongoDB, PostgreSQL, MySQL)",
+      "type": "string",
       "sensitive": false
     },
     "frontend_build_cmd": {
+      "title": "프론트엔드 빌드 명령어",
       "description": "프론트엔드 빌드 명령어 (예: npm run build)",
+      "type": "string",
       "sensitive": false
     },
     "backend_build_cmd": {
+      "title": "백엔드 빌드 명령어",
       "description": "백엔드 빌드 명령어 (예: dotnet build)",
+      "type": "string",
       "sensitive": false
     },
     "k8s_namespace": {
+      "title": "Kubernetes 네임스페이스",
       "description": "Kubernetes 네임스페이스 (예: my-app-prod)",
+      "type": "string",
       "sensitive": false
     },
     "production_url": {
+      "title": "프로덕션 URL",
       "description": "프로덕션 URL (예: https://myapp.com)",
+      "type": "string",
       "sensitive": false
     },
     "cloud_cli": {
+      "title": "클라우드 CLI",
       "description": "클라우드 CLI (예: oci, aws, gcloud)",
+      "type": "string",
       "sensitive": false
     }
   }
