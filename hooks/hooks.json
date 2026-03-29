@@ -1,118 +1,84 @@
 {
-  "SessionStart": [
-    {
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/inject-context.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/self-improve-check.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/session-continuity.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/worktree-status.sh"
-        }
-      ]
-    }
-  ],
-  "PreToolUse": [
-    {
-      "matcher": "Write|Edit",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/hard/scaffold-never-do.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/hard/security-gate.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/hard/import-guard.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/hard/file-size-guard.sh"
-        }
-      ]
-    },
-    {
-      "matcher": "Bash",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/hard/typecheck-gate.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/hard/lint-gate.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/deploy-checklist.sh"
-        }
-      ]
-    }
-  ],
-  "PostToolUse": [
-    {
-      "matcher": "Write|Edit",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/api-consistency.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/component-pattern.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/db-schema-warn.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/perf-hint.sh"
-        }
-      ]
-    },
-    {
-      "matcher": "Bash",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/error-pattern-warn.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/dependency-alert.sh"
-        }
-      ]
-    }
-  ],
-  "Stop": [
-    {
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/fact-extraction.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/wip-commit.sh"
-        },
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/soft/metrics-log.sh"
-        }
-      ]
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/soft/inject-context.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/soft/session-continuity.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/hard/scaffold-never-do.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/hard/security-gate.sh \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/hard/file-size-guard.sh \"$TOOL_INPUT\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/soft/api-consistency.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/soft/error-pattern-warn.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/soft/wip-commit.sh"
+          }
+        ]
+      }
+    ]
+  }
 }
