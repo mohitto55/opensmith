@@ -2,7 +2,7 @@
 name: execute
 description: "기능 파이프라인 오케스트레이터. 시스템 PRD 기반으로 세분화 PRD → Memory Bank 시맨틱 검색 → 설계 → 구현 → QA → 배포를 서브스킬 체이닝으로 실행."
 allowed-tools: Agent, Bash(*), Read, Write, Edit, Glob, Grep, Skill, TaskCreate, TaskUpdate, TaskList, TaskGet, SendMessage
-argument-hint: "<구현할 기능 설명>"
+argument-hint: "<구현할 기능 설명> [--all] [--resume] [--from N]"
 ---
 
 # /execute — 기능 파이프라인 오케스트레이터
@@ -29,8 +29,11 @@ step9: 완료 보고              → shared/report.md
 ```json
 {
   "current_step": 0,
+  "mode": "single",
   "feature_name": "",
   "feature_args": "$ARGUMENTS",
+  "feature_queue": [],
+  "completed_features": [],
   "system_prd_path": null,
   "feature_prd_path": null,
   "design_path": null,
@@ -43,6 +46,7 @@ step9: 완료 보고              → shared/report.md
 
 ## 옵션
 
+- `--all` : system-prd.md의 미구현 기능을 **전부** 순서대로 실행
 - `--resume` : state.json의 current_step부터 재개
 - `--from N` : step N부터 시작
 
@@ -51,8 +55,9 @@ step9: 완료 보고              → shared/report.md
 1. $ARGUMENTS 파싱 (기능 설명 + 옵션)
 2. `--resume` → state.json 읽고 current_step으로 이동
 3. `--from N` → state.json의 current_step을 N으로 설정
-4. 기본 → `.execute/state.json` 생성, current_step=0
-5. 해당 스텝 파일을 Read하여 지시를 따름:
+4. `--all` → system-prd.md 읽고 미구현 기능 목록을 `feature_queue`에 저장, `mode: "all"`
+5. 기본 → `.execute/state.json` 생성, current_step=0
+6. 해당 스텝 파일을 Read하여 지시를 따름:
 
 ```
 execute/steps/step0-read-prd.md
