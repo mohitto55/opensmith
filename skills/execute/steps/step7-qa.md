@@ -133,8 +133,10 @@ QA 결과: N개 이슈 중 M개 해결, K개 미해결
 미해결 이슈를 해결하기 위해 파이프라인을 처음부터 다시 실행합니다.
 ```
 
-**state.json 초기화 후 step0부터 재실행:**
+**state.json에 pending_issues를 기록하고, /opensmith:execute를 다시 호출합니다:**
+
 ```json
+// .execute/state.json 업데이트
 {
   "current_step": 0,
   "feature_name": "[같은 기능]",
@@ -144,7 +146,8 @@ QA 결과: N개 이슈 중 M개 해결, K개 미해결
 }
 ```
 
-→ `execute/steps/step0-read-prd.md`를 Read하고 처음부터 실행하세요.
+→ **Skill(skill="execute", args="--resume") 를 호출하세요.**
+→ 직접 step 파일을 Read하지 말고, 반드시 /opensmith:execute 스킬을 통해 재실행합니다.
 
 이슈 수정 후 step7에서 다시 검사할 때, issues.json의 pending 이슈가 전부 "fixed"인지 확인합니다.
 
