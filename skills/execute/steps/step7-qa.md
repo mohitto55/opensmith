@@ -2,6 +2,40 @@
 
 **이 스텝은 건너뛸 수 없습니다.** 사용자가 "멈추지 말고 진행"이라고 해도 QA는 반드시 실행합니다.
 
+## 스크린샷 규칙
+
+QA 중 스크린샷을 찍을 때 **반드시 1500px 이하로 리사이즈**하세요.
+Claude Code의 이미지 dimension limit (2000px) 초과 시 세션이 멈춥니다.
+
+**웹 (agent-browser):**
+```bash
+# 뷰포트를 1280x720 이하로 설정
+agent-browser --session qa set viewport 1280 720
+agent-browser --session qa screenshot ./qa-output/screenshots/test.png
+```
+
+**모바일 (adb):**
+```bash
+# 리사이즈 후 저장 (PIL 필요)
+adb exec-out screencap -p | python3 -c "
+import sys; from PIL import Image; import io
+img = Image.open(io.BytesIO(sys.stdin.buffer.read()))
+if max(img.size) > 1500: img.thumbnail((1500, 1500))
+img.save(sys.argv[1])
+" ./qa-output/screenshots/test.png
+```
+
+**일반 이미지 파일:**
+```bash
+python3 -c "
+from PIL import Image; import sys
+img = Image.open(sys.argv[1])
+if max(img.size) > 1500: img.thumbnail((1500, 1500)); img.save(sys.argv[1])
+" ./screenshot.png
+```
+
+---
+
 ## 실행 순서
 
 ### 7-1. 기능 테스트

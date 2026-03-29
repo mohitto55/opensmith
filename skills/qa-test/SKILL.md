@@ -28,6 +28,28 @@ kubectl get ingress -n {{K8S_NAMESPACE}}
 
 Ingress의 ADDRESS 컬럼에서 외부 IP를 확인합니다. 기본 URL은 `http://<EXTERNAL-IP>/` 입니다.
 
+## 중요: 스크린샷 크기 제한
+
+Claude Code의 이미지 dimension limit (2000px) 초과 시 세션이 멈춥니다.
+**모든 스크린샷은 1500px 이하로 캡처하세요.**
+
+```bash
+# 뷰포트를 1280x720으로 설정 (스크린샷 전에 반드시)
+agent-browser --session qa set viewport 1280 720
+```
+
+모바일 테스트(adb) 시:
+```bash
+adb exec-out screencap -p | python3 -c "
+import sys; from PIL import Image; import io
+img = Image.open(io.BytesIO(sys.stdin.buffer.read()))
+if max(img.size) > 1500: img.thumbnail((1500, 1500))
+img.save(sys.argv[1])
+" ./qa-output/screenshots/test.png
+```
+
+---
+
 ## 중요: 실제 사용자 환경 시뮬레이션
 
 agent-browser는 Chromium headless로 실행되어, 일반 사용자의 HTTP 브라우저 환경과 다르다.
