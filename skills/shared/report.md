@@ -30,4 +30,10 @@ QA: [PASS/FAIL]
 Memory Bank: 반영 [N개] / 신규 기록 [N개]
 ```
 
-5. `state.json`: `current_step = "done"`
+5. **알림 발송**
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event feature_done --message "기능 구현 완료: [feature_name]\nQA: [PASS/FAIL]\n배포: [성공/스킵]"
+```
+
+6. `state.json`: `current_step = "done"`

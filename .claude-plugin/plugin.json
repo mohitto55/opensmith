@@ -64,6 +64,30 @@
       "description": "클라우드 CLI (예: oci, aws, gcloud)",
       "type": "string",
       "sensitive": false
+    },
+    "slack_webhook": {
+      "title": "Slack Webhook URL",
+      "description": "Slack Incoming Webhook URL (빌드/배포/QA 알림용, 없으면 비워두세요)",
+      "type": "string",
+      "sensitive": true
+    },
+    "discord_webhook": {
+      "title": "Discord Webhook URL",
+      "description": "Discord Webhook URL (빌드/배포/QA 알림용, 없으면 비워두세요)",
+      "type": "string",
+      "sensitive": true
+    },
+    "telegram_token": {
+      "title": "Telegram Bot Token",
+      "description": "Telegram Bot Token (없으면 비워두세요)",
+      "type": "string",
+      "sensitive": true
+    },
+    "telegram_chat_id": {
+      "title": "Telegram Chat ID",
+      "description": "Telegram Chat ID (없으면 비워두세요)",
+      "type": "string",
+      "sensitive": false
     }
   }
 }

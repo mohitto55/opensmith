@@ -23,3 +23,13 @@ cd frontend/ && {{FRONTEND_BUILD_CMD}}
 
 - `state.json`에 `build_retry_count` 기록
 - 3회 연속 실패 시 사용자에게 보고 후 파이프라인 중단
+
+## 알림
+
+```bash
+# 빌드 성공 시
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event build_success --message "빌드 성공: [feature_name]"
+
+# 3회 실패 시
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event build_fail --message "빌드 3회 실패: [에러 요약]"
+```
