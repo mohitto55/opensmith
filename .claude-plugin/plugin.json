@@ -10,7 +10,6 @@
   "license": "MIT",
   "keywords": ["self-improving", "autonomous", "pipeline", "prd", "hooks", "memory-bank"],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
   "userConfig": {
     "project_name": {
       "title": "프로젝트 이름",
