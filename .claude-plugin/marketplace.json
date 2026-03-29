@@ -1,0 +1,12 @@
+{
+  "name": "opensmith-marketplace",
+  "description": "OpenSmith - 자율 자가개선 개발 아키텍처 플러그인",
+  "plugins": [
+    {
+      "name": "opensmith",
+      "description": "자율 자가개선 개발 아키텍처. PRD → 설계 → 구현 → QA → 배포 파이프라인 + 30 훅 + Memory Bank 시맨틱 검색.",
+      "version": "1.0.0",
+      "source": "."
+    }
+  ]
+}
