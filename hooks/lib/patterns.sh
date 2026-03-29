@@ -1,55 +1,67 @@
 #!/bin/bash
-# NEVER DO 패턴 로더
+# NEVER DO 패턴 로더 + 보안 패턴
 # scaffold 파일에서 금지 패턴을 추출하여 검사에 사용
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
-NEVER_DO_FILE="$PROJECT_ROOT/.claude/skills/never-do.md"
+PROJECT_ROOT="$(pwd)"
 
 # 프론트엔드 금지 패턴 (grep -P 호환 정규식)
-# Add project-specific frontend forbidden patterns here
+# Customize: Add project-specific frontend forbidden patterns
 FRONTEND_NEVER_PATTERNS=(
   'type="color"'
-  # Add project-specific import rules here
   "React\.FC<"
   "React\.FC "
-  "export const .* = \(\) =>"
-  "export const .* = \(props"
 )
 
 # 백엔드 금지 패턴
-# Add project-specific backend forbidden patterns here
+# Customize: Add project-specific backend forbidden patterns
 BACKEND_NEVER_PATTERNS=(
   '\[ApiController\]'
   '\[HttpGet\]'
   '\[HttpPost\]'
-  # Add project-specific DB access patterns here (e.g. direct collection access)
-  'wildcard.*\*'
   'AllowAnyOrigin'
-  'password.*=.*"'
-  'secret.*=.*"'
-  'MD5\.Create'
-  'SHA256\.Create.*password'
 )
 
-# 보안 금지 패턴 (전체)
+# 보안 금지 패턴 (secure-web-saas 15항목 기반)
 SECURITY_NEVER_PATTERNS=(
-  'password.*=.*"[^"]{3,}"'
-  'secret.*=.*"[^"]{3,}"'
-  'apikey.*=.*"[^"]{3,}"'
-  'token.*=.*"[^"]{3,}"'
+  # 11. Secret 하드코딩
+  'password\s*[:=]\s*"[^"]{8,}"'
+  'secret\s*[:=]\s*"[^"]{8,}"'
+  'apikey\s*[:=]\s*"[^"]{8,}"'
+  'api_key\s*[:=]\s*"[^"]{8,}"'
+  'token\s*[:=]\s*"[^"]{8,}"'
+  'private_key\s*[:=]\s*"[^"]{8,}"'
+  # 클라우드 키
+  'AKIA[0-9A-Z]{16}'
+  'AIza[0-9A-Za-z_-]{35}'
+  '-----BEGIN (RSA |EC )?PRIVATE KEY'
+  # 1. CORS 와일드카드
   'AllowAnyOrigin'
   'Access-Control-Allow-Origin.*\*'
+  # 3. XSS
+  'dangerouslySetInnerHTML'
+  'innerHTML\s*='
+  'document\.write\('
+  'eval\('
+  # 8. SQLi
+  '"SELECT.*\+.*\$'
+  'f"SELECT'
+  'f"INSERT'
+  'f"UPDATE'
+  'f"DELETE'
+  # 14. 에러 노출
+  'DeveloperExceptionPage'
+  'DJANGO_DEBUG\s*=\s*True'
 )
 
 # 파일 확장자로 프론트/백엔드 판별
 get_file_type() {
   local file="$1"
   case "$file" in
-    *.tsx|*.ts|*.jsx|*.js|*.css)
+    *.tsx|*.ts|*.jsx|*.js|*.css|*.vue)
       echo "frontend"
       ;;
-    *.cs|*.csproj)
+    *.cs|*.csproj|*.py|*.go|*.java|*.rb)
       echo "backend"
       ;;
     *)
