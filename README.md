@@ -1,269 +1,202 @@
-# LoopyEra -- Autonomous Self-Improving Development Architecture for Claude Code
+# OpenSmith
 
-LoopyEra is a template system that turns Claude Code into an autonomous,
-self-improving development agent. It wraps every Claude Code session in a
-layered hook architecture that **validates, guards, advises, and learns** from
-every action the agent takes.
+자율 자가개선 개발 아키텍처 — Claude Code 플러그인.
 
-The system was extracted from a production project (CrackCopy) and packaged as
-a reusable template so any team can adopt the same architecture.
+PRD 작성부터 설계, 구현, QA, 배포까지 전체 개발 파이프라인을 자동화합니다.
 
 ---
 
-## Core Concept: The 5-Layer Architecture
-
-```
-Layer 1 -- User         Prompts, slash commands, intent
-Layer 2 -- Claude        LLM reasoning, tool use, code generation
-Layer 3 -- Hooks         Automated gates that intercept every tool call
-Layer 4 -- Memory        Facts, metrics, session continuity, self-improvement
-Layer 5 -- Infrastructure  Build, deploy, monitor, rollback
-```
-
-**Hooks** are the heart of the system. They fire at four lifecycle points:
-
-| Event          | When it fires                                  | Typical use                        |
-|----------------|------------------------------------------------|------------------------------------|
-| `SessionStart` | Once when a Claude Code session begins         | Inject context, check worktree     |
-| `PreToolUse`   | Before Claude writes or edits a file           | Block forbidden patterns (HARD)    |
-| `PostToolUse`  | After Claude writes or edits a file            | Warn about style / suggest fixes   |
-| `Stop`         | When Claude finishes responding                | Extract facts, log metrics, commit |
-
-Hooks are classified into three escalation tiers:
-
-| Tier    | Behavior                                                        |
-|---------|-----------------------------------------------------------------|
-| **HARD**  | Blocks the action entirely if the check fails (exit code 2)  |
-| **AGENT** | Automatically fixes the problem and retries                   |
-| **SOFT**  | Prints a warning or suggestion; does not block                |
-
----
-
-## Directory Structure
-
-```
-loopy-era/
-  README.md                   # This file
-  config.example.yaml         # Example configuration values
-  setup.sh                    # Automated installer script
-  settings.template.json      # .claude/settings.json template
-  CLAUDE.template.md          # CLAUDE.md template for your project
-  docs/                       # Architecture deep-dives (optional reading)
-  hooks/                      # Hook scripts (copied to .claude/hooks/)
-    hard/
-      scaffold-never-do.sh    # Block forbidden code patterns
-      security-gate.sh        # Block secrets and insecure patterns
-      import-guard.sh         # Block banned imports / dependencies
-      file-size-guard.sh      # Block files exceeding line limit
-      typecheck-gate.sh       # Block on type errors
-      lint-gate.sh            # Block on lint errors
-      test-coverage-gate.sh   # Block if coverage drops
-      docs-structure-gate.sh  # Block malformed doc changes
-    agent/
-      scaffold-fix-agent.sh   # Auto-fix scaffold violations
-      type-fix-agent.sh       # Auto-fix type errors
-      build-fix-agent.sh      # Auto-fix build failures
-      test-fix-agent.sh       # Auto-fix failing tests
-      deploy-fix-agent.sh     # Auto-fix deploy issues
-      merge-conflict-agent.sh # Auto-resolve merge conflicts
-    soft/
-      inject-context.sh       # Load project context at session start
-      self-improve-check.sh   # Check for pending self-improvements
-      session-continuity.sh   # Resume from last session state
-      worktree-status.sh      # Report git worktree status
-      component-pattern.sh    # Suggest component best practices
-      api-consistency.sh      # Warn about API naming inconsistencies
-      db-schema-warn.sh       # Warn about schema changes
-      perf-hint.sh            # Suggest performance improvements
-      fact-extraction.sh      # Extract learnings at session end
-      metrics-log.sh          # Log session metrics
-      wip-commit.sh           # Auto-commit work in progress
-      change-summary.sh       # Summarize changes made
-      dependency-alert.sh     # Warn about new dependencies
-      deploy-checklist.sh     # Show deploy reminders
-      error-pattern-warn.sh   # Warn about known error patterns
-      telegram-notify.sh      # Send notifications (optional)
-  skills/                     # Skill definitions (copied to .claude/skills/)
-    frontend-patterns.md      # Frontend coding standards
-    backend-patterns.md       # Backend coding standards
-    never-do.md               # Unified list of forbidden patterns
-```
-
----
-
-## Quick Start
-
-### Prerequisites
-
-- Claude Code CLI installed and authenticated
-- Bash (Git Bash on Windows, native on macOS/Linux)
-- `yq` (optional, for YAML config parsing -- the script falls back to arguments)
-
-### Step 1: Clone or copy this template
+## 설치
 
 ```bash
-git clone <this-repo> loopy-era
+# 1. 마켓플레이스 등록
+claude plugin marketplace add mohitto55/opensmith
+
+# 2. 플러그인 설치 (프로젝트 단위)
+claude plugin install opensmith@opensmith-marketplace --scope project
+
+# 3. 플러그인 로드
+/reload-plugins
 ```
 
-### Step 2: Create your configuration
-
+전역 설치 (모든 프로젝트에서 사용):
 ```bash
-cp loopy-era/config.example.yaml my-project-config.yaml
-# Edit my-project-config.yaml with your project values
+claude plugin install opensmith@opensmith-marketplace --scope user
 ```
-
-### Step 3: Run the installer
-
-```bash
-cd /path/to/your-project
-bash /path/to/loopy-era/setup.sh --config /path/to/my-project-config.yaml
-```
-
-Or pass values directly:
-
-```bash
-bash /path/to/loopy-era/setup.sh \
-  --project-name "MyApp" \
-  --project-dir "/path/to/your-project" \
-  --frontend-framework "Next.js 14" \
-  --backend-framework "ASP.NET Core 8.0" \
-  --database "PostgreSQL" \
-  --auth-method "JWT + OAuth 2.0" \
-  --infra "AWS EKS" \
-  --ai-services "Claude API"
-```
-
-### Step 4: Review generated files
-
-The installer creates or updates:
-
-- `.claude/settings.json` -- Hook registrations
-- `.claude/hooks/` -- All hook scripts
-- `.claude/skills/` -- Scaffold pattern files
-- `CLAUDE.md` -- Project instructions for Claude Code
-
-### Step 5: Start Claude Code
-
-```bash
-claude
-```
-
-Every session now runs through the LoopyEra hook pipeline automatically.
 
 ---
 
-## Placeholder Reference
+## 사용법
 
-These placeholders appear in the template files. The `setup.sh` script
-replaces them with your actual values.
-
-| Placeholder                     | Description                                        | Example                                    |
-|---------------------------------|----------------------------------------------------|--------------------------------------------|
-| `{{PROJECT_NAME}}`              | Display name of your project                       | `MyApp`                                    |
-| `{{PROJECT_DIR}}`               | Absolute path to project root                      | `/home/user/myapp`                         |
-| `{{PROJECT_DESCRIPTION}}`       | One-line project description                       | `Real-time collaborative editor`           |
-| `{{PROJECT_DESCRIPTION_LONG}}`  | Detailed project description (2-3 sentences)       | `A web app that lets teams...`             |
-| `{{FRONTEND_FRAMEWORK}}`        | Frontend framework and version                     | `Next.js 14`                               |
-| `{{FRONTEND_BUILD_CMD}}`        | Command to build the frontend                      | `cd frontend && npm run build`             |
-| `{{FRONTEND_DEV_CMD}}`          | Command to start frontend dev server               | `cd frontend && npm run dev`               |
-| `{{FRONTEND_TYPECHECK_CMD}}`    | Command to type-check frontend                     | `cd frontend && npx tsc --noEmit`          |
-| `{{BACKEND_FRAMEWORK}}`         | Backend framework and version                      | `ASP.NET Core 8.0`                         |
-| `{{BACKEND_BUILD_CMD}}`         | Command to build the backend                       | `cd backend && dotnet build`               |
-| `{{BACKEND_DEV_CMD}}`           | Command to start backend dev server                | `cd backend && dotnet run`                 |
-| `{{DATABASE}}`                  | Database technology                                | `PostgreSQL 16`                            |
-| `{{AUTH_METHOD}}`               | Authentication method                              | `JWT + Google OAuth 2.0`                   |
-| `{{INFRA}}`                     | Infrastructure / hosting                           | `AWS EKS + Terraform`                      |
-| `{{AI_SERVICES}}`               | AI/ML services used                                | `Claude API + Embeddings`                  |
-| `{{DEPLOY_BACKEND_CMD}}`        | Backend deploy command                             | `kubectl rollout restart deploy/backend`   |
-| `{{DEPLOY_FRONTEND_CMD}}`       | Frontend deploy command                            | `kubectl rollout restart deploy/frontend`  |
-| `{{FRONTEND_NEVER_DO}}`         | Forbidden frontend patterns (multi-line)           | `- Tailwind -> use CSS modules`            |
-| `{{BACKEND_NEVER_DO}}`          | Forbidden backend patterns (multi-line)            | `- Controllers -> use Minimal API`         |
-| `{{MAX_FILE_LINES}}`            | Maximum lines per file before guard triggers       | `500`                                      |
-| `{{BANNED_IMPORTS}}`            | Comma-separated list of banned import patterns     | `tailwindcss,moment`                       |
-
----
-
-## How to Customize
-
-### Adding a new HARD hook
-
-1. Create a script in `hooks/hard/my-check.sh`
-2. The script receives `$TOOL_INPUT` as its first argument
-3. Exit with code `2` to block the action, code `0` to allow
-4. Print a message to stdout explaining why the action was blocked
-5. Register the hook in `settings.template.json` under `PreToolUse`
-
-### Adding a new SOFT hook
-
-1. Create a script in `hooks/soft/my-hint.sh`
-2. Exit with code `0` always (soft hooks never block)
-3. Print suggestions or warnings to stdout
-4. Register in `settings.template.json` under `PostToolUse` or `Stop`
-
-### Adding a new AGENT hook
-
-1. Create a script in `hooks/agent/my-fixer.sh`
-2. The script should attempt to fix the issue automatically
-3. Exit `0` on success, non-zero if it could not fix
-4. Register in `settings.template.json` under `PostToolUse`
-
-### Disabling a hook
-
-Remove or comment out its entry in `.claude/settings.json`. The hook script
-can remain on disk without effect.
-
-### Adding custom skills
-
-Place `.md` files in `skills/` and reference them from `CLAUDE.template.md`.
-Skills provide domain-specific instructions that Claude reads when invoked.
-
----
-
-## How It Works at Runtime
+### 1단계: PRD 작성
 
 ```
-User sends message
-  |
-  v
-[SessionStart hooks fire]
-  - inject-context.sh loads CLAUDE.md + recent facts
-  - session-continuity.sh restores last session state
-  - worktree-status.sh reports branch/worktree info
-  |
-  v
-Claude reasons and decides to write/edit a file
-  |
-  v
-[PreToolUse hooks fire on Write|Edit]
-  - scaffold-never-do.sh checks forbidden patterns  --> BLOCK if violated
-  - security-gate.sh checks for secrets/tokens       --> BLOCK if found
-  - import-guard.sh checks banned imports             --> BLOCK if found
-  - file-size-guard.sh checks line count              --> BLOCK if too large
-  |
-  v
-Claude writes the file
-  |
-  v
-[PostToolUse hooks fire on Write|Edit]
-  - component-pattern.sh suggests improvements        --> WARN
-  - api-consistency.sh checks naming conventions      --> WARN
-  - db-schema-warn.sh flags schema changes            --> WARN
-  - perf-hint.sh suggests optimizations               --> WARN
-  - scaffold-fix-agent.sh auto-fixes violations       --> AUTO-FIX
-  - type-fix-agent.sh auto-fixes type errors          --> AUTO-FIX
-  |
-  v
-Claude finishes responding
-  |
-  v
-[Stop hooks fire]
-  - fact-extraction.sh saves learnings to memory
-  - metrics-log.sh logs session statistics
-  - wip-commit.sh commits work in progress
+/opensmith:prd 커뮤니티 플랫폼
+```
+
+대화형으로 질문하며 시스템 PRD를 작성합니다.
+- Phase 1~3: 핵심 정의, 범위, 심화 질문
+- Phase 4~5: PRD 생성 + 사용자 검토
+- Phase 6: 프로젝트 설정 자동 생성 (.opensmith/config.json, scaffold 패턴)
+
+산출물: `docs/prd/system-prd.md`
+
+### 2단계: 기능 구현
+
+```
+# 기능 하나만
+/opensmith:execute 좋아요 기능
+
+# PRD의 미구현 기능 전부 순차 실행
+/opensmith:execute --all
+```
+
+`--all`은 system-prd.md의 기능 목록(Section 9)에서 미구현 기능을 순서대로 전부 실행합니다:
+
+```
+F-1: step0→1→2→3→4→5→6→7→8→9 ✅
+  ↓ (자동으로 다음 기능)
+F-2: step0→1→2→3→4→5→6→7→8→9 ✅
+  ↓
+F-3: step0→...→9 ✅
+  ↓
+"전체 기능 구현 완료!"
+```
+
+### execute 파이프라인 (10 스텝)
+
+| Step | 이름 | 하는 일 |
+|------|------|---------|
+| 0 | Read PRD | 시스템 PRD 읽기, 기능 매칭 |
+| 1 | Feature PRD | 세분화 PRD 생성 (없으면 자동 생성) |
+| 2 | Collect | Memory Bank + 코드베이스 + 문서 + GitHub 4-소스 검색 |
+| 3 | Design | 비기능 요구사항 + 대규모 아키텍처 설계 |
+| 4 | Approve | 사용자 승인 (승인 없이 구현 안 함) |
+| 5 | Implement | 7역할 agent-teams로 구현 |
+| 6 | Build | 빌드 검증 (최대 3회 재시도) |
+| 7 | QA | QA 테스트 (**생략 불가**) |
+| 8 | Deploy | 배포 (사용자 승인 후) |
+| 9 | Report | 완료 보고 + PRD 상태 갱신 |
+
+### 기타 옵션
+
+```
+/opensmith:execute --resume     # 중단된 곳부터 재개
+/opensmith:execute --from 3     # step3부터 시작
+```
+
+### 3단계: Memory Bank 초기화 (선택)
+
+```
+/opensmith:init-memory
+```
+
+과거 대화에서 의사결정/에러/패턴을 학습하여, execute 시 자동으로 관련 컨텍스트를 제공합니다.
+
+필요 패키지: `pip install sentence-transformers sqlite-vec anthropic`
+
+---
+
+## 스킬 목록
+
+| 스킬 | 설명 |
+|------|------|
+| `/opensmith:prd` | 대화형 시스템 PRD 작성 |
+| `/opensmith:execute` | 전체 기능 파이프라인 (PRD → 구현 → QA → 배포) |
+| `/opensmith:init-memory` | Memory Bank 초기화 |
+| `/opensmith:agent-teams` | 7역할 팀 오케스트레이터 |
+| `/opensmith:deploy` | K8s 배포 |
+| `/opensmith:qa-test` | 브라우저 QA 테스트 |
+| `/opensmith:scaffold-update` | scaffold 패턴 수동 업데이트 |
+| `/opensmith:self-improve` | 자가개선 루프 실행 |
+| `/opensmith:merge-worktree` | 워크트리 스쿼시 머지 |
+
+---
+
+## 7역할 팀 (agent-teams)
+
+| 역할 | Phase | 하는 일 |
+|------|-------|---------|
+| 팀 리더 | 전체 | 오케스트레이션, 모니터링, 리뷰 |
+| 설계자 | 0-1 | API + 데이터 모델 설계 |
+| UI 디자이너 | 1-2 | 와이어프레임, 컴포넌트 명세, 반응형 |
+| DB 관리자 | 1-2 | 스키마, 인덱스, 마이그레이션 |
+| 프론트엔드 | 2-3 | UI 명세 기반 컴포넌트 구현 |
+| 백엔드 | 2-3 | API 엔드포인트 + 서비스 구현 |
+| QA | 4 | L0~L5 테스트 |
+
+---
+
+## 30 Hooks
+
+| 티어 | 개수 | 동작 |
+|------|------|------|
+| HARD | 8 | 위반 시 차단 (보안, 패턴, 크기, 타입, 린트) |
+| AGENT | 6 | 자동 수정 (빌드, 테스트, 타입, scaffold, 배포, 머지) |
+| SOFT | 16 | 경고/컨텍스트 주입 (세션 복원, 팩트 추출, WIP 커밋 등) |
+
+---
+
+## Memory Bank
+
+SQLite + sqlite-vec 기반 시맨틱 검색 시스템.
+
+- **대화 인덱싱**: JSONL → exchange 쌍 → 384-dim 임베딩
+- **팩트 추출**: 세션 종료 시 Haiku API로 의사결정/에러/패턴 자동 추출
+- **하이브리드 검색**: 벡터 유사도 + FTS → RRF(Reciprocal Rank Fusion) 결합
+- **자동 통합**: 중복 감지, 모순 교체, 팩트 진화 추적
+
+---
+
+## 프로젝트 구조
+
+```
+opensmith/
+├── .claude-plugin/
+│   ├── plugin.json              # 플러그인 메타데이터
+│   └── marketplace.json         # 마켓플레이스 정의
+├── skills/
+│   ├── prd/SKILL.md             # PRD 작성
+│   ├── execute/                 # 파이프라인 오케스트레이터
+│   │   ├── SKILL.md
+│   │   ├── chain-hook.sh        # 스텝 체이닝
+│   │   └── steps/step0~9.md     # 독립 서브스킬
+│   ├── shared/                  # 공용 서브스킬
+│   ├── agent-teams/SKILL.md     # 7역할 팀
+│   ├── init-memory/SKILL.md     # Memory Bank 초기화
+│   ├── deploy/SKILL.md
+│   ├── qa-test/SKILL.md
+│   └── (기타)
+├── hooks/
+│   ├── hooks.json               # 훅 등록
+│   ├── hard/ (8개)
+│   ├── agent/ (6개)
+│   ├── soft/ (16개)
+│   └── lib/                     # memory-query.sh 등
+├── scripts/
+│   ├── init-db.py               # DB 스키마 생성
+│   ├── parse-conversations.py   # 대화 파서
+│   ├── embed.py                 # 임베딩 생성
+│   ├── extract-facts.py         # 팩트 추출
+│   └── requirements.txt
+├── docs/                        # 아키텍처 설계 문서
+└── README.md
+```
+
+---
+
+## 업데이트
+
+```bash
+# 마켓플레이스 업데이트
+claude plugin marketplace update opensmith-marketplace
+
+# 세션 내에서 즉시 반영
+/reload-plugins
 ```
 
 ---
 
 ## License
 
-This template is provided as-is. Adapt it to your needs.
+MIT
