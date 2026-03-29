@@ -2,5 +2,10 @@
 
 `shared/build.md`를 Read하고 그 지시를 따르세요.
 
-성공 시 → 다음 스텝: `execute/steps/step7-qa.md`
+성공 시 → state.json current_step을 7로 업데이트
 3회 실패 시 → 파이프라인 중단
+
+## 필수: 다음 스텝 실행
+
+빌드 성공 후 **반드시** `execute/steps/step7-qa.md`를 Read하고 QA 테스트를 실행하세요.
+**절대 여기서 멈추거나 완료 보고로 건너뛰지 마세요.**

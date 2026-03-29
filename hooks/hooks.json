@@ -69,6 +69,17 @@
         ]
       }
     ],
+    "TaskCompleted": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/skills/execute/chain-hook.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
