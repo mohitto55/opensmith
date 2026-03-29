@@ -37,12 +37,35 @@ secure-web-saas.md 의 15항목:
 ```
 
 **15/15 PASS가 아니면 배포로 넘어갈 수 없습니다.**
+**배포 명령(kubectl, docker push 등) 실행 시 security-report-gate.sh 훅이 리포트를 확인합니다.**
+**리포트가 없거나 FAIL이 있으면 배포 명령 자체가 차단됩니다 (exit 2).**
 
 FAIL 항목 발견 시:
 1. 즉시 코드 수정
 2. 수정 후 해당 항목만 재검사
 3. 전부 PASS할 때까지 반복
 4. 3단계 에스컬레이션 적용 (1~2회 소프트 → 3~5회 에이전트 → 6회+ 강제 차단)
+
+### 15/15 PASS 시 — 보안 리포트 파일 생성 (필수)
+
+모든 항목이 PASS되면 **반드시** `.execute/security-report.json`을 생성하세요.
+이 파일이 없으면 배포 훅이 배포를 차단합니다.
+
+```json
+{
+  "timestamp": "YYYY-MM-DDTHH:MM:SS",
+  "feature_name": "[feature_name]",
+  "total": 15,
+  "passed": 15,
+  "items": [
+    {"id": 1, "name": "CORS/Preflight", "result": "PASS", "detail": "..."},
+    {"id": 2, "name": "CSRF", "result": "PASS", "detail": "..."},
+    {"id": 3, "name": "XSS+CSP", "result": "PASS", "detail": "..."},
+    ...
+    {"id": 15, "name": "의존성 취약점", "result": "PASS", "detail": "..."}
+  ]
+}
+```
 
 ### 7-4. 브라우저 테스트 (선택)
 

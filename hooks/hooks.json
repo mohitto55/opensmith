@@ -47,6 +47,15 @@
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/hard/file-size-guard.sh \"$TOOL_INPUT\""
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/hard/security-report-gate.sh \"$TOOL_INPUT\""
+          }
+        ]
       }
     ],
     "PostToolUse": [
