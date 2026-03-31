@@ -1,5 +1,9 @@
 # Step 5: 구현
 
+> **⛔ 금지**: 이 단계에서 `Agent(subagent_type=...)` 등 subagent를 직접 스폰하지 마세요.
+> **반드시 `/agent-teams` (Skill)을 통해 팀 기반으로 구현해야 합니다.**
+> subagent 직접 호출은 역할 분담, 태스크 추적, QA 검증이 누락되므로 금지합니다.
+
 ## 실행
 
 `.execute/state.json`에서 읽기:
