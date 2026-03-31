@@ -15,6 +15,4 @@ QA 테스트를 통과했습니다. 배포를 진행할까요? (y/n)
 거부 → 배포 스킵
 ```
 
-완료 후 state.json: `current_step = 9`, `deploy_result = "success" | "skipped"`
-
 다음 스텝: `execute/steps/step9-report.md`

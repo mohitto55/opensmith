@@ -2,12 +2,13 @@
 name: execute
 description: "기능 파이프라인 오케스트레이터. 시스템 PRD 기반으로 세분화 PRD → Memory Bank 시맨틱 검색 → 설계 → 구현 → QA → 배포를 서브스킬 체이닝으로 실행."
 allowed-tools: Agent, Bash(*), Read, Write, Edit, Glob, Grep, Skill, TaskCreate, TaskUpdate, TaskList, TaskGet, SendMessage
-argument-hint: "<구현할 기능 설명> [--all] [--resume] [--from N]"
+argument-hint: "<구현할 기능 설명> [--all] [--from N]"
 ---
 
-# /execute — 기능 파이프라인 오케스트레이터
+# /execute — 기능 파이프라인 오케스트레이터 (Stateless)
 
-각 Step은 독립 서브스킬. 컨텍스트 유실 방지를 위해 분리.
+각 Step은 독립 서브스킬. **state.json 없이** 동작합니다.
+컨텍스트는 Task 시스템 + 프로젝트 내 파일(docs/, .opensmith/)로 관리합니다.
 
 ## Pipeline
 
@@ -24,39 +25,32 @@ step8: 배포                   → /deploy
 step9: 완료 보고              → shared/report.md
 ```
 
-## State (.execute/state.json)
+## 상태 관리 — Stateless 설계
 
-```json
-{
-  "current_step": 0,
-  "mode": "single",
-  "feature_name": "",
-  "feature_args": "$ARGUMENTS",
-  "feature_queue": [],
-  "completed_features": [],
-  "system_prd_path": null,
-  "feature_prd_path": null,
-  "design_path": null,
-  "memory_bank_context": null,
-  "codebase_context": null,
-  "docs_context": null,
-  "step_results": {}
-}
-```
+**state.json을 사용하지 않습니다.** 여러 터미널에서 동시 실행 가능.
+
+상태 추적 방법:
+1. **진행 상태**: TaskCreate/TaskUpdate로 추적 (세션 내)
+2. **기능 PRD**: `docs/prd/features/[기능명]/README.md` (디스크에 영구 저장)
+3. **설계 문서**: `docs/design/[기능명].md` (디스크에 영구 저장)
+4. **수집 컨텍스트**: step2에서 수집한 내용을 `docs/prd/features/[기능명]/context.md`에 저장
+5. **버그**: `.opensmith/bugs.json` (디스크에 영구 저장)
+6. **PRD 구현 상태**: `docs/prd/system-prd.md` Section 9의 Implemented 마킹
+
+**세션이 끊겨도 복구 가능**: 디스크의 PRD/설계/context 파일이 있으면 해당 스텝부터 재개.
 
 ## 옵션
 
 - `--all` : system-prd.md의 미구현 기능을 **전부** 순서대로 실행
-- `--resume` : state.json의 current_step부터 재개
-- `--from N` : step N부터 시작
+- `--from N` : step N부터 시작 (이전 스텝의 산출물이 디스크에 있어야 함)
 
 ## 실행
 
 1. $ARGUMENTS 파싱 (기능 설명 + 옵션)
-2. `--resume` → state.json 읽고 current_step으로 이동
-3. `--from N` → state.json의 current_step을 N으로 설정
-4. `--all` → system-prd.md 읽고 미구현 기능 목록을 `feature_queue`에 저장, `mode: "all"`
-5. 기본 → `.execute/state.json` 생성, current_step=0
+2. `--from N` → 해당 스텝의 전제조건(PRD/설계 파일 존재) 확인 후 시작
+3. `--all` → system-prd.md 읽고 미구현 기능 목록 추출, 순서대로 실행
+4. 기본 → step0부터 시작
+5. **각 스텝 시작 전** TaskUpdate로 현재 진행 상태 기록
 6. 해당 스텝 파일을 Read하여 지시를 따름:
 
 ```
@@ -77,7 +71,7 @@ execute/steps/step9-report.md
 1. **스텝을 건너뛰지 마세요.** step0 → step1 → ... → step9 순서를 반드시 지킵니다.
 2. **QA(step7)는 생략 불가.** 사용자가 "빨리 진행" "멈추지 마" 등을 말해도 QA는 반드시 실행합니다.
 3. **각 스텝 파일을 반드시 Read하고 그 안의 지시를 따르세요.** 스텝 내용을 기억에 의존하지 마세요.
-4. **state.json의 current_step을 반드시 업데이트하세요.** 다음 스텝으로 넘어가기 전에.
+4. **각 스텝 완료 시 TaskUpdate로 완료 표시하세요.** state.json은 사용하지 않습니다.
 5. **사용자에게 불필요하게 묻지 마세요.** 아래 2가지 경우에만 사용자에게 질문합니다:
    - **step4 (사용자 승인)**: 설계 승인은 반드시 물어야 합니다.
    - **step8 (배포 승인)**: 배포 여부는 반드시 물어야 합니다.
@@ -87,5 +81,4 @@ execute/steps/step9-report.md
 
 ## 지금 시작
 
-`.execute/state.json`을 생성하고, 해당 스텝 파일을 Read하여 지시를 따르세요.
-각 스텝 완료 후 state.json을 업데이트하면 chain-hook이 다음 스텝을 트리거합니다.
+파이프라인 태스크를 TaskCreate로 생성하고, step0 파일을 Read하여 지시를 따르세요.

@@ -2,7 +2,7 @@
 
 `shared/build.md`를 Read하고 그 지시를 따르세요.
 
-성공 시 → state.json current_step을 7로 업데이트
+성공 시 → 다음 스텝으로
 3회 실패 시 → 파이프라인 중단
 
 ## 필수: 다음 스텝 실행

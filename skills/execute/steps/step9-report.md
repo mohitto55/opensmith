@@ -6,42 +6,29 @@
 
 report 실행 후 **반드시** 아래 루프 체크를 수행하세요.
 
-### 1. state.json의 mode 확인
+### 1. --all 모드 확인
 
 ```
-mode가 "all"인가?
-  ├─ 아니다 (single) → current_step = "done", 파이프라인 종료
+--all 모드인가?
+  ├─ 아니다 (single) → 파이프라인 종료
   └─ 맞다 (all) → 아래 진행
 ```
 
-### 2. 현재 기능을 completed_features에 추가
+### 2. system-prd.md의 현재 기능을 "Implemented"로 마킹
 
-```json
-state.json 업데이트:
-- completed_features에 현재 feature_name 추가
-- feature_queue에서 현재 feature_name 제거
-```
+`docs/prd/system-prd.md` Section 9에서 현재 기능의 상태를 "Implemented"로 변경합니다.
 
 ### 3. 다음 미구현 기능 확인
 
 ```
-feature_queue에 남은 기능이 있는가?
-  ├─ 있다 → 다음 기능으로 state.json 초기화:
-  │   - feature_name = queue의 첫 번째 기능
-  │   - feature_args = 해당 기능 설명
-  │   - current_step = 0
-  │   - feature_prd_path = null
-  │   - design_path = null
-  │   - memory_bank_context = null
-  │   - step_results = {}
+Section 9에 "Implemented"가 아닌 기능이 남아있는가?
+  ├─ 있다 → 다음 기능으로 전환:
   │   → execute/steps/step0-read-prd.md 를 Read하고 실행
   │
   └─ 없다 → 전체 완료 보고:
-      - current_step = "done"
-      - 전체 구현 요약 출력:
-        "전체 기능 구현 완료!
-         완료된 기능: [completed_features 목록]
-         총 N개 기능 구현 + QA + 배포"
+      "전체 기능 구현 완료!
+       완료된 기능: [목록]
+       총 N개 기능 구현 + QA + 배포"
 ```
 
 ### 4. 다음 기능 시작 전 안내

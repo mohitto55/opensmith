@@ -4,12 +4,9 @@ Feature PRD + 수집된 컨텍스트를 기반으로 기술 설계 문서를 생
 
 ## 입력
 
-`.execute/state.json`에서 읽기:
-- `feature_prd_path` — 세분화 PRD 경로
-- `feature_name` — 기능명 (kebab-case)
-- `memory_bank_context` — Memory Bank 검색 결과
-- `codebase_context` — 코드베이스 탐색 결과
-- `docs_context` — 문서 검색 결과
+다음 파일들을 읽어 컨텍스트를 확보합니다:
+- Feature PRD: `docs/prd/features/[기능명]/README.md`
+- 수집 컨텍스트: `docs/prd/features/[기능명]/context.md`
 
 ## 실행
 
@@ -18,15 +15,15 @@ Feature PRD + 수집된 컨텍스트를 기반으로 기술 설계 문서를 생
 
 ### 설계 문서 형식
 
-저장: `docs/prd/features/[feature_name]/design.md`
+저장: `docs/design/[feature_name].md`
 
 ```markdown
 # 기술 설계: [기능명]
 
-> Feature PRD: [feature_prd_path]
+> Feature PRD: docs/prd/features/[기능명]/README.md
 > 작성일: YYYY-MM-DD
 
-## 0. Memory Bank 컨텍스트
+## 0. 수집 컨텍스트 반영
 - **준수할 과거 결정**: [decision 팩트]
 - **알려진 위험**: [error 팩트]
 - **제약사항**: [constraint 팩트]
@@ -65,4 +62,4 @@ Feature PRD + 수집된 컨텍스트를 기반으로 기술 설계 문서를 생
 
 ## 출력
 
-- `state.json` 업데이트: `design_path`, `current_step++`
+- 설계 문서: `docs/design/[feature_name].md`

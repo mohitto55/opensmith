@@ -5,8 +5,7 @@
 ## 소스 A: Memory Bank 시맨틱 검색
 
 ```bash
-FEATURE_ARGS=$(python3 -c "import json; print(json.load(open('.execute/state.json'))['feature_args'])")
-
+# $FEATURE_ARGS는 현재 기능 설명 (step0에서 파악한 것)
 .claude/hooks/lib/memory-query.sh "$FEATURE_ARGS" --top-k 5 --type decision
 .claude/hooks/lib/memory-query.sh "$FEATURE_ARGS 에러" --top-k 3 --type error
 .claude/hooks/lib/memory-query.sh "$FEATURE_ARGS" --top-k 3 --type constraint
@@ -78,33 +77,40 @@ GitHub CLI(`gh`)가 없거나 인증 안 되어 있으면 → 경고 출력 후 
 
 ## 결과 통합
 
-수집 결과를 `.execute/state.json`에 저장:
+수집 결과를 `docs/prd/features/[기능명]/context.md`에 저장:
 
-```json
-{
-  "memory_bank_context": {
-    "decisions": [...],
-    "errors": [...],
-    "constraints": [...],
-    "patterns": [...]
-  },
-  "codebase_context": {
-    "related_files": [...],
-    "reusable_code": [...],
-    "similar_patterns": [...]
-  },
-  "docs_context": {
-    "architecture": "...",
-    "scaffold_rules": "..."
-  },
-  "github_context": {
-    "related_prs": [...],
-    "related_issues": [...],
-    "review_comments": [...],
-    "open_prs": [...]
-  },
-  "current_step": 3
-}
+```markdown
+# 수집 컨텍스트: [기능명]
+
+## Memory Bank
+### 과거 의사결정
+- ...
+### 에러 패턴
+- ...
+### 제약사항
+- ...
+### 참고 패턴
+- ...
+
+## 코드베이스
+### 관련 파일
+- ...
+### 재사용 가능 코드
+- ...
+
+## 문서
+### 아키텍처 요약
+- ...
+### Scaffold 규칙
+- ...
+
+## GitHub
+### 관련 PR
+- ...
+### 관련 이슈
+- ...
+### 리뷰 코멘트
+- ...
 ```
 
 다음 스텝 실행: `execute/steps/step3-design.md` 를 Read하고 따르세요.

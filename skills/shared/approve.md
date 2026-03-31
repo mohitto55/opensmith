@@ -2,7 +2,10 @@
 
 ## 입력
 
-`.execute/state.json`에서 `feature_prd_path`, `design_path`, `memory_bank_context` 읽기
+다음 파일들을 읽어 승인 요약을 작성합니다:
+- Feature PRD: `docs/prd/features/[기능명]/README.md`
+- 설계 문서: `docs/design/[기능명].md`
+- 수집 컨텍스트: `docs/prd/features/[기능명]/context.md`
 
 ## 실행
 
@@ -11,14 +14,14 @@
 ```
 실행 계획을 수립했습니다:
 
-📋 세분화 PRD: [feature_prd_path]
-📐 기술 설계: [design_path]
+세분화 PRD: docs/prd/features/[기능명]/README.md
+기술 설계: docs/design/[기능명].md
 
 요약:
 - API: [엔드포인트 N개]
 - 데이터 모델: [모델 N개]
 - 프론트엔드: [컴포넌트 N개]
-- Memory Bank 반영: [과거 결정/주의사항 N개]
+- 수집 컨텍스트 반영: [과거 결정/주의사항 N개]
 
 수정할 부분이 있으면 알려주세요.
 승인하시면 구현을 시작합니다.
@@ -27,8 +30,8 @@
 ### 분기
 
 ```
-승인 → state.json: current_step++
-반려 → 수정 사항 메모 → state.json: current_step = design 스텝으로 되돌림
+승인 → 다음 스텝(구현)으로 진행
+반려 → 수정 사항 메모 → 설계 스텝으로 되돌림
 ```
 
 **승인 없이 절대 구현 단계로 넘어가지 않습니다.**

@@ -38,9 +38,17 @@ if max(img.size) > 1500: img.thumbnail((1500, 1500)); img.save(sys.argv[1])
 
 ## 실행 순서
 
+### 7-0. PRD Bug/TODO 확인
+
+Feature PRD(`docs/prd/features/[기능명]/README.md`)의 Section 9(Bugs)와 Section 10(TODOs)를 확인합니다.
+작업 중 에이전트들이 기록한 Bug/TODO가 있으면:
+- status가 "open"인 항목을 전부 확인
+- 즉시 수정 가능하면 수정 후 status를 "fixed"/"done"으로 변경
+- 수정 불가능하면 그대로 두고 step7 결과에 포함
+
 ### 7-1. 기능 테스트
 
-`.execute/state.json`에서 `feature_prd_path` 읽기 → Feature PRD의 수용 기준(Section 3) 기반 테스트:
+Feature PRD(`docs/prd/features/[기능명]/README.md`)의 수용 기준(Section 3) 기반 테스트:
 
 ```
 각 FR에 대해:
@@ -168,25 +176,11 @@ QA 결과: N개 버그 중 M개 해결, K개 미해결
 - BUG-001: [설명] (severity: high)
 - BUG-003: [설명] (severity: medium)
 
-미해결 버그를 해결하기 위해 파이프라인을 처음부터 다시 실행합니다.
+미해결 버그를 해결하기 위해 step5(구현)부터 다시 실행합니다.
 ```
 
-**state.json에 pending_bugs를 기록하고, /opensmith:execute를 다시 호출합니다:**
-
-```json
-{
-  "current_step": 0,
-  "feature_name": "[같은 기능]",
-  "feature_args": "[같은 기능] — 미해결 버그 수정: BUG-001, BUG-003",
-  "pending_bugs": ["BUG-001", "BUG-003"],
-  "step_results": {}
-}
-```
-
-→ **Skill(skill="execute", args="--resume") 를 호출하세요.**
-→ 직접 step 파일을 Read하지 말고, 반드시 /opensmith:execute 스킬을 통해 재실행합니다.
-
-재실행 후 step7에서 다시 검사할 때, bugs.json의 pending 버그가 전부 "fixed"인지 확인합니다.
+→ step5-implement.md를 Read하고 버그 수정에 집중하여 재구현
+→ 재구현 후 step6(빌드) → step7(QA) 재실행
 
 ### 7-9. 전부 해결 시
 
@@ -195,8 +189,6 @@ QA 결과: N개 버그 중 M개 해결, K개 미해결
 보안 15항목: 15/15 PASS
 미해결 버그: 0개
 ```
-
-state.json: `current_step = 8`
 
 ## 필수: 다음 스텝 실행
 

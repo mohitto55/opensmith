@@ -47,23 +47,16 @@
 
 ## 8. 의존성
 - 기존 기능 / 외부 서비스 / 선행 작업
+
+## 9. Bugs
+| ID | 설명 | 심각도 | 상태 | 발견자 | 발견일 | 관련 파일 |
+|----|------|--------|------|--------|--------|-----------|
+
+## 10. TODOs
+| ID | 설명 | 우선순위 | 상태 | 발견자 | 발견일 |
+|----|------|----------|------|--------|--------|
 ```
 
-3. 사용자에게 확인 요청:
+3. PRD 생성/갱신 완료 후 바로 다음 스텝으로 진행합니다.
 
-```
-세분화 PRD를 생성했습니다: docs/prd/features/[기능명]/README.md
-검토해주세요. 수정할 부분이 있으면 알려주세요.
-```
-
-4. 확인 후 `.execute/state.json` 업데이트:
-
-```json
-{
-  "feature_name": "[kebab-case]",
-  "feature_prd_path": "docs/prd/features/[기능명]/README.md",
-  "current_step": 2
-}
-```
-
-5. 다음 스텝 실행: `execute/steps/step2-collect.md` 를 Read하고 따르세요.
+4. 다음 스텝 실행: `execute/steps/step2-collect.md` 를 Read하고 따르세요.
