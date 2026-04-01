@@ -66,13 +66,39 @@ execute/steps/step8-deploy.md
 execute/steps/step9-report.md
 ```
 
+## Phase 강제 추적 (PreToolUse hook 연동)
+
+**각 스텝 시작/완료 시 반드시 아래 명령을 실행하세요. hook이 phase 순서를 감시합니다.**
+
+스텝 시작 시:
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$SESSION_ID" execute stepN in_progress
+```
+
+스텝 완료 시:
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$SESSION_ID" execute stepN completed
+```
+
+`$SESSION_ID`는 현재 세션 ID입니다. 파이프라인 시작 시 아래로 확인:
+```bash
+# SESSION_ID는 환경변수로 이미 존재하거나, 세션 시작 시 설정됨
+echo $CLAUDE_SESSION_ID
+```
+
+**파이프라인 완전 종료 시:**
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$SESSION_ID" execute done completed
+```
+
 ## 절대 규칙
 
 1. **스텝을 건너뛰지 마세요.** step0 → step1 → ... → step9 순서를 반드시 지킵니다.
 2. **QA(step7)는 생략 불가.** 사용자가 "빨리 진행" "멈추지 마" 등을 말해도 QA는 반드시 실행합니다.
 3. **각 스텝 파일을 반드시 Read하고 그 안의 지시를 따르세요.** 스텝 내용을 기억에 의존하지 마세요.
 4. **각 스텝 완료 시 TaskUpdate로 완료 표시하세요.** state.json은 사용하지 않습니다.
-5. **사용자에게 불필요하게 묻지 마세요.** 아래 2가지 경우에만 사용자에게 질문합니다:
+5. **각 스텝 시작/완료 시 반드시 update_phase.py를 호출하세요.** hook이 순서를 강제합니다.
+6. **사용자에게 불필요하게 묻지 마세요.** 아래 2가지 경우에만 사용자에게 질문합니다:
    - **step4 (사용자 승인)**: 설계 승인은 반드시 물어야 합니다.
    - **step8 (배포 승인)**: 배포 여부는 반드시 물어야 합니다.
    - 그 외 모든 스텝에서는 **멈추지 말고 자율적으로 판단하여 계속 진행하세요.**
@@ -81,4 +107,12 @@ execute/steps/step9-report.md
 
 ## 지금 시작
 
-파이프라인 태스크를 TaskCreate로 생성하고, step0 파일을 Read하여 지시를 따르세요.
+1. 먼저 세션 ID를 확인합니다:
+```bash
+echo $CLAUDE_SESSION_ID
+```
+2. Phase 추적을 시작합니다:
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" execute step0 in_progress
+```
+3. 파이프라인 태스크를 TaskCreate로 생성하고, step0 파일을 Read하여 지시를 따르세요.

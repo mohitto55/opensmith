@@ -19,6 +19,9 @@ memory-bank/
 # Bug tracker runtime
 bugs.json
 
+# Phase state tracking (session-specific, runtime only)
+.opensmith/states/
+
 # Session / metrics logs
 *.log
 logs/

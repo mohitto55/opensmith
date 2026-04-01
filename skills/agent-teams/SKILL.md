@@ -46,6 +46,27 @@ echo $CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS
 
 ---
 
+## Phase 강제 추적 (PreToolUse hook 연동)
+
+**각 Phase 시작/완료 시 반드시 아래 명령을 실행하세요. hook이 phase 순서를 감시합니다.**
+
+Phase 시작 시:
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phaseN in_progress
+```
+
+Phase 완료 시:
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phaseN completed
+```
+
+**팀 작업 완전 종료 시:**
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams done completed
+```
+
+---
+
 ## ⛔ 절대 금지 규칙
 
 1. **TeamCreate 생략 금지** — 어떤 작업이든 반드시 `TeamCreate`로 팀을 생성해야 한다. "간단한 작업", "프론트엔드 전용", "파일 하나 수정" 등의 이유로 팀 생성을 건너뛰지 마라.
@@ -63,6 +84,10 @@ echo $CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS
 사용자 요구사항: `$ARGUMENTS`
 
 ### Phase 0: 분석 (팀 리더)
+
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase0 in_progress
+```
 
 **반드시 PRD + 설계 문서를 먼저 확인합니다.**
 
@@ -95,6 +120,11 @@ TaskCreate: QA - [테스트] (blocked by 프론트엔드, 백엔드)
 
 ### Phase 1: 설계 (설계자 에이전트)
 
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase0 completed
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase1 in_progress
+```
+
 ```
 Agent(
   name="architect",
@@ -126,6 +156,11 @@ scaffold 참조:
 팀 리더: 설계 결과 검토 → system-design-validator 실행
 
 ### Phase 2: DB + UI 디자인 (병렬)
+
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase1 completed
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase2 in_progress
+```
 
 **DB 관리자** + **UI 디자이너** 동시 스폰:
 
@@ -255,6 +290,11 @@ scaffold: .claude/skills/frontend-patterns.md
 
 ### Phase 3: 구현 (병렬 — Promise.all) — TDD 필수
 
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase2 completed
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase3 in_progress
+```
+
 **프론트엔드 + 백엔드 동시 스폰:**
 
 **TDD 원칙: 모든 구현은 반드시 테스트를 먼저 작성한 후 구현합니다.**
@@ -319,6 +359,11 @@ Agent(
 
 ### Phase 4: QA (구현 완료 후)
 
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase3 completed
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase4 in_progress
+```
+
 ```
 Agent(
   name="qa-engineer",
@@ -352,6 +397,11 @@ L5 Security:
 ```
 
 ### Phase 5: 배포 (팀 리더)
+
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase4 completed
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase5 in_progress
+```
 
 1. QA 결과 최종 검토
 2. 모든 태스크 완료 확인
@@ -392,3 +442,8 @@ QA 단계까지 미루지 마세요.
 ## 완료 조건
 
 QA 엔지니어가 L0 (빌드 성공) 이상을 통과하면 완료.
+
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams phase5 completed
+python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-teams done completed
+```
