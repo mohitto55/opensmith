@@ -97,17 +97,17 @@ def embed_query(model, query_text):
     print(blob.hex())
 
 def main():
+    # --query 모드: DB 불필요, 쿼리 임베딩만 생성
+    if len(sys.argv) >= 3 and sys.argv[1] == "--query":
+        model = load_model()
+        embed_query(model, " ".join(sys.argv[2:]))
+        return
+
     db_path = os.path.join(os.getcwd(), ".opensmith", "memory-bank", "memory.db")
 
     if not os.path.exists(db_path):
         print("[ERROR] Memory Bank DB가 없습니다.")
         sys.exit(1)
-
-    # --query 모드: 쿼리 임베딩만 생성
-    if len(sys.argv) >= 3 and sys.argv[1] == "--query":
-        model = load_model()
-        embed_query(model, " ".join(sys.argv[2:]))
-        return
 
     model = load_model()
     conn = sqlite3.connect(db_path)

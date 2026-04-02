@@ -87,19 +87,13 @@ def main():
 
     current_idx = phases.index(current)
 
-    # Check tool_input for hints about which phase the action belongs to
-    tool_input = hook_input.get("tool_input", {})
-    tool_input_str = json.dumps(tool_input).lower() if tool_input else ""
-
-    # If someone is trying to do work for a future phase, block it
-    for i, phase in enumerate(phases):
-        if i > current_idx and phase in tool_input_str:
-            print(
-                f'{{"decision": "block", "reason": "현재 {current} 진행 중입니다. {phase}는 아직 시작할 수 없습니다. {current}를 먼저 완료하세요."}}',
-            )
-            sys.exit(2)
-
-    # Allow current phase work
+    # Phase is in_progress — modifying tools are allowed for current phase.
+    # Inject current phase as additionalContext so Claude stays aware.
+    print(json.dumps({
+        "additionalContext": f"현재 {pipeline}/{current} 진행 중입니다. "
+                            f"이 단계의 작업만 수행하세요. "
+                            f"다음 단계로 넘어가려면 먼저 {current}를 완료하세요."
+    }))
     sys.exit(0)
 
 
