@@ -15,6 +15,20 @@
   └─ 없다 → 정상 진행
 ```
 
+### 0-0a. 미해결 TODO 확인
+
+```
+docs/prd/features/ 아래 모든 기능 디렉토리를 순회:
+  각 README.md의 Section 10(TODOs) 테이블에서 status가 "open"인 항목 수집
+
+  ├─ open TODO 있음
+  │   "이전 세션에서 미해결 TODO N개가 있습니다:"
+  │   → TODO 목록 사용자에게 표시 (기능명, ID, 설명, 우선순위)
+  │   → 현재 기능과 관련된 TODO는 step3(설계) 컨텍스트에 포함
+  │   → 관련 없는 TODO는 목록만 표시하고 진행
+  └─ open TODO 없음 → 정상 진행
+```
+
 ### 0-0b. GitHub 이슈 → Bug/Todo 동기화
 
 **GitHub 이슈를 확인하고, 작업 중인 이슈를 Bug 또는 Todo로 자동 등록합니다.**

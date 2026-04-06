@@ -6,9 +6,30 @@
    - `docs/prd/features/[feature_name]/README.md` 상태 → `Implemented`
    - `docs/prd/system-prd.md` Section 9 기능 목록 상태 갱신
 
-2. **Memory Bank 피드백**
-   - 이번 구현에서 중요한 의사결정이 있었으면 즉시 기록
-   - 나머지는 세션 종료 시 `fact-extraction.sh` 훅이 자동 처리
+2. **Memory Bank 팩트 자동 추출**
+
+   이번 구현에서 배운 것을 facts로 추출하여 저장합니다.
+   아래 카테고리별로 해당 사항이 있으면 JSON 배열을 만들어 실행하세요:
+
+   ```
+   카테고리:
+   - decision: 기술/아키텍처 선택과 그 이유
+   - pattern: 발견한 코딩 패턴/컨벤션
+   - error: 만난 에러와 해결 방법
+   - constraint: 발견한 프로젝트 제약사항
+   - self-improve: scaffold/파이프라인 개선이 필요한 패턴
+   ```
+
+   ```bash
+   python scripts/extract-facts.py --save-json '[
+     {"type":"decision","fact":"설명","confidence":0.8,"tags":["태그"]},
+     {"type":"error","fact":"설명","confidence":0.7,"tags":["태그"]}
+   ]'
+   ```
+
+   - confidence: 0.5~1.0 (확실할수록 높게)
+   - 해당 사항 없으면 스킵
+   - 임베딩은 자동 생성됨
 
 3. **GitHub 이슈 클로즈**
 

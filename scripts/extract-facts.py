@@ -183,6 +183,45 @@ def save_facts(facts, db_path, session_id="unknown"):
     conn.close()
     return saved
 
+def save_and_embed(facts, db_path, session_id="unknown"):
+    """팩트 저장 후 임베딩도 생성."""
+    saved = save_facts(facts, db_path, session_id)
+    if saved > 0:
+        # 새 팩트에 임베딩 생성
+        try:
+            from sentence_transformers import SentenceTransformer
+            import sqlite_vec
+
+            model = SentenceTransformer("all-MiniLM-L6-v2")
+            conn = sqlite3.connect(db_path)
+            conn.enable_load_extension(True)
+            sqlite_vec.load(conn)
+
+            rows = conn.execute(
+                "SELECT id, fact, tags FROM facts WHERE embedding IS NULL"
+            ).fetchall()
+
+            for row in rows:
+                text = f"{row[1]} {row[2]}"
+                embedding = model.encode([text])[0]
+                blob = struct.pack(f"{len(embedding)}f", *embedding.tolist())
+                conn.execute("UPDATE facts SET embedding = ? WHERE id = ?", (blob, row[0]))
+                try:
+                    conn.execute(
+                        "INSERT OR REPLACE INTO vec_facts (id, embedding) VALUES (?, ?)",
+                        (row[0], blob)
+                    )
+                except Exception:
+                    pass
+
+            conn.commit()
+            conn.close()
+            print(f"[OK] {len(rows)}개 팩트 임베딩 생성")
+        except Exception as e:
+            print(f"[WARN] 임베딩 생성 스킵: {e}")
+    return saved
+
+
 def main():
     db_path = os.path.join(os.getcwd(), ".opensmith", "memory-bank", "memory.db")
 
@@ -190,7 +229,24 @@ def main():
         print("[WARN] Memory Bank DB 없음. 팩트 추출 스킵.")
         sys.exit(0)
 
-    # 세션 파일 또는 stdin에서 대화 읽기
+    # --save-json 모드: Claude Code에서 직접 JSON을 넘겨서 저장
+    if len(sys.argv) >= 3 and sys.argv[1] == "--save-json":
+        facts_json = " ".join(sys.argv[2:])
+        try:
+            facts = json.loads(facts_json)
+        except json.JSONDecodeError:
+            # stdin에서 읽기 시도
+            if not sys.stdin.isatty():
+                facts = json.loads(sys.stdin.read())
+            else:
+                print("[ERROR] JSON 파싱 실패")
+                sys.exit(1)
+
+        saved = save_and_embed(facts, db_path)
+        print(f"[완료] {saved}개 새 팩트 저장")
+        return
+
+    # 기존 모드: 세션 파일 또는 stdin에서 대화 읽기 → LLM 추출
     session_file = sys.argv[1] if len(sys.argv) > 1 else None
     conversation = get_recent_conversation(session_file)
 
@@ -206,7 +262,7 @@ def main():
         sys.exit(0)
 
     print(f"[INFO] {len(facts)}개 팩트 추출됨. DB 저장 중...")
-    saved = save_facts(facts, db_path)
+    saved = save_and_embed(facts, db_path)
     print(f"[완료] {saved}개 새 팩트 저장")
 
 if __name__ == "__main__":

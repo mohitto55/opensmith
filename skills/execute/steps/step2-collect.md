@@ -6,13 +6,18 @@
 
 ```bash
 # $FEATURE_ARGS는 현재 기능 설명 (step0에서 파악한 것)
-.claude/hooks/lib/memory-query.sh "$FEATURE_ARGS" --top-k 5 --type decision
-.claude/hooks/lib/memory-query.sh "$FEATURE_ARGS 에러" --top-k 3 --type error
-.claude/hooks/lib/memory-query.sh "$FEATURE_ARGS" --top-k 3 --type constraint
-.claude/hooks/lib/memory-query.sh "$FEATURE_ARGS" --top-k 3 --type pattern
+# 1차: facts 기반 하이브리드 검색
+python scripts/memory_query.py "$FEATURE_ARGS" --top-k 5 --type decision
+python scripts/memory_query.py "$FEATURE_ARGS 에러" --top-k 3 --type error
+python scripts/memory_query.py "$FEATURE_ARGS" --top-k 3 --type constraint
+python scripts/memory_query.py "$FEATURE_ARGS" --top-k 3 --type pattern
+
+# 2차: exchange 시맨틱 검색 (facts가 부족할 때 보완)
+python scripts/memory_query.py --exchanges "$FEATURE_ARGS" --top-k 5
 ```
 
-Memory Bank가 없거나 비어있으면 → 경고 출력 후 스킵
+facts가 비어있으면 자동으로 exchange fallback이 작동합니다.
+Memory Bank가 없으면 → 경고 출력 후 스킵
 
 ### 활용 매핑
 | 팩트 타입 | 반영처 |

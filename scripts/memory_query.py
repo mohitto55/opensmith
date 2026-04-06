@@ -128,9 +128,15 @@ def search_hybrid(query, limit=5, fact_type=None):
         facts[fid] = {"type": row[1], "fact": row[2], "conf": row[3]}
 
     ranked = sorted(scores.items(), key=lambda x: -x[1])[:limit]
-    for fid, score in ranked:
-        f = facts[fid]
-        print(f"{f['type']}|{f['fact']}|{f['conf']}")
+
+    if ranked:
+        for fid, score in ranked:
+            f = facts[fid]
+            print(f"{f['type']}|{f['fact']}|{f['conf']}")
+    else:
+        # Fallback: facts가 비어있으면 exchange에서 검색
+        print("(facts 비어있음 — exchange fallback)", file=sys.stderr)
+        search_exchanges(query, limit)
 
 
 def search_exchanges(query, limit=5):
