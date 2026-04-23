@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-"""Claude Code 대화 로그를 파싱하여 exchange 쌍으로 변환하고 DB에 저장합니다."""
+"""Claude Code 대화 로그를 파싱하여 exchange 쌍으로 변환하고 DB에 저장합니다.
 
+기본 동작: 현재 프로젝트(cwd) 디렉터리에서 생성된 대화만 인덱싱.
+`--all`로 모든 프로젝트 허용, `--project PATH`로 특정 프로젝트 지정 가능.
+"""
+
+import argparse
 import json
 import os
 import sys
@@ -9,8 +14,24 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-def find_conversation_files():
-    """Claude Code 대화 로그 디렉토리 탐색."""
+
+def cwd_to_project_slug(cwd: Path) -> str:
+    """cwd를 Claude Code의 프로젝트 폴더 slug로 변환.
+    e.g. C:\\Users\\admin\\git\\Python\\opensmith
+       → C--Users-admin-git-Python-opensmith
+    """
+    s = str(cwd.resolve())
+    s = s.replace("\\", "/").replace("/", "-").replace(":", "-")
+    # 앞뒤 대시 정리
+    s = s.strip("-")
+    return s
+
+
+def find_conversation_files(project_filter=None):
+    """Claude Code 대화 로그 디렉토리 탐색.
+
+    project_filter: None이면 모든 프로젝트. 문자열이면 해당 폴더명만.
+    """
     claude_dir = Path.home() / ".claude" / "projects"
     if not claude_dir.exists():
         print(f"[WARN] Claude 대화 디렉토리 없음: {claude_dir}")
@@ -18,9 +39,12 @@ def find_conversation_files():
 
     jsonl_files = []
     for project_dir in claude_dir.iterdir():
-        if project_dir.is_dir():
-            for f in project_dir.glob("*.jsonl"):
-                jsonl_files.append(f)
+        if not project_dir.is_dir():
+            continue
+        if project_filter and project_dir.name != project_filter:
+            continue
+        for f in project_dir.glob("*.jsonl"):
+            jsonl_files.append(f)
 
     return sorted(jsonl_files, key=lambda f: f.stat().st_mtime)
 
@@ -142,17 +166,37 @@ def save_to_db(exchanges, db_path):
     return inserted, skipped
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--all", action="store_true",
+                    help="모든 프로젝트 로그 인덱싱 (경계 없음, 권장하지 않음)")
+    ap.add_argument("--project", type=str,
+                    help="특정 프로젝트 slug만. 예: C--Users-admin-git-Python-opensmith")
+    args = ap.parse_args()
+
     db_path = os.path.join(os.getcwd(), ".opensmith", "memory-bank", "memory.db")
 
     if not os.path.exists(db_path):
         print("[ERROR] Memory Bank DB가 없습니다. 먼저 init-db.py를 실행하세요.")
         sys.exit(1)
 
+    # 필터 결정
+    if args.all:
+        project_filter = None
+        print("[INFO] --all: 모든 프로젝트 로그를 인덱싱합니다.")
+    elif args.project:
+        project_filter = args.project
+        print(f"[INFO] 프로젝트 필터: {project_filter}")
+    else:
+        project_filter = cwd_to_project_slug(Path.cwd())
+        print(f"[INFO] 현재 프로젝트만: {project_filter}")
+
     print("[INFO] Claude Code 대화 로그 검색 중...")
-    files = find_conversation_files()
+    files = find_conversation_files(project_filter=project_filter)
 
     if not files:
         print("[INFO] 대화 로그가 없습니다.")
+        if project_filter:
+            print(f"[HINT] ~/.claude/projects/{project_filter}/ 존재 확인, 또는 --all 사용.")
         return
 
     print(f"[INFO] {len(files)}개 대화 파일 발견")
