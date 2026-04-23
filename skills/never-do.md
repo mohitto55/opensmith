@@ -80,6 +80,10 @@
 
 <!-- AUTO-GENERATED RULES START -->
 <!-- 자가개선 루프가 이 영역에 새 규칙을 추가합니다 -->
+
+| AUTO01 | 전역 상태 파일(state.json 등)을 여러 Claude Code 세션이 공유하게 두지 말 것 | 동시 세션이 서로의 상태를 덮어쓰면 파이프라인 진행 정보가 유실된다 | 세션별 경로(`state-{CLAUDE_SESSION_ID}.json`)로 분리하거나 SQLite/TaskList 같은 동시쓰기 안전 저장소 사용 (2026-04-23, self-improve 팩트 dd17f5de) |
+| AUTO02 | Stop 훅에서 `cat <<PROMPT` 로 Claude에게 지시를 출력하는 패턴 금지 | Stop 이벤트는 모델 턴이 종료된 뒤 발화되므로 출력된 지시를 Claude가 읽고 수행할 수 없다 — 사실상 데드코드 | SessionStart/SessionEnd 훅에서 Python 등 독립 스크립트가 직접 DB를 쓰게 하거나, 지시 주입이 필요하면 UserPromptSubmit 훅에서 additionalContext 반환 (2026-04-23, self-improve 팩트 d33c3866) |
+
 <!-- AUTO-GENERATED RULES END -->
 
 ---
