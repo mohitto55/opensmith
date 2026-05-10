@@ -149,16 +149,6 @@
     ],
     "Stop": [
       {
-        "_comment": "SOFT: Extract facts and learnings from the session for future reference",
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash {{PROJECT_DIR}}/.claude/hooks/soft/fact-extraction.sh"
-          }
-        ]
-      },
-      {
         "_comment": "SOFT: Log session metrics (files changed, errors encountered, duration)",
         "matcher": "",
         "hooks": [

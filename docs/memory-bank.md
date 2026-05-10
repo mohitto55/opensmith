@@ -152,9 +152,10 @@ LIMIT 20;
 
 ## 파이프라인 2: 팩트 추출
 
-### 2-1. 세션 종료 트리거
+### 2-1. ToolUse 카운터 트리거
 
-Stop 훅(`fact-extraction.sh`)이 세션 종료 시 자동 실행.
+PostToolUse 훅(`fact-extract-counter.sh`)이 N회 ToolUse마다(기본 50) 자동 실행.
+이전의 Stop 훅(`fact-extraction.sh`)은 모델 턴 종료 후 발화하는 이벤트라 LLM이 지시를 읽을 수 없어 데드코드였고, 카운터 방식으로 대체됨 (참고: AUTO02).
 
 ### 2-2. Fact Extraction (Haiku LLM)
 

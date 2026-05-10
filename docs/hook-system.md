@@ -119,10 +119,13 @@ LoopyEra에서 훅은 **자동 품질 보증 + 자가 수정 + 컨텍스트 강�
       {
         "command": "bash .claude/hooks/soft/wip-commit.sh",
         "type": "additionalContext"
-      },
+      }
+    ],
+    "PostToolUse": [
       {
-        "command": "bash .claude/hooks/soft/fact-extraction.sh",
-        "type": "additionalContext"
+        "command": "bash .claude/hooks/soft/fact-extract-counter.sh",
+        "type": "additionalContext",
+        "_comment": "N회(기본 50) ToolUse마다 백그라운드로 팩트 추출 (Haiku API)"
       }
     ],
     "SessionStart": [
@@ -170,7 +173,7 @@ LoopyEra에서 훅은 **자동 품질 보증 + 자가 수정 + 컨텍스트 강�
 │   ├── perf-hint.sh             # S10: 성능 힌트
 │   ├── dependency-alert.sh      # S11: 의존성 경고
 │   ├── worktree-status.sh       # S12: 워크트리 상태
-│   ├── fact-extraction.sh       # S13: 팩트 추출
+│   ├── fact-extract-counter.sh  # S13: ToolUse 카운터 기반 팩트 추출
 │   ├── wip-commit.sh            # S14: WIP 커밋
 │   ├── metrics-log.sh           # S15: 메트릭 로그
 │   └── telegram-notify.sh       # S16: 텔레그램 알림

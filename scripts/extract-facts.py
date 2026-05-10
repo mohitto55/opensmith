@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """세션 대화에서 팩트를 추출하고 Memory Bank에 저장합니다.
 
-fact-extraction.sh 훅에서 호출됩니다.
+fact-extract-counter.sh 훅(PostToolUse, N회 ToolUse마다)에서 백그라운드로 호출됩니다.
 Haiku API로 대화에서 의사결정/패턴/에러/제약사항을 추출합니다.
 """
 

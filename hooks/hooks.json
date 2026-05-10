@@ -85,6 +85,15 @@
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/soft/error-pattern-warn.sh"
           }
         ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/soft/fact-extract-counter.sh"
+          }
+        ]
       }
     ],
     "TaskCompleted": [
