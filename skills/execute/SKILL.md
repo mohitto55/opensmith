@@ -31,11 +31,13 @@ step9: 완료 보고              → shared/report.md
 
 상태 추적 방법:
 1. **진행 상태**: TaskCreate/TaskUpdate로 추적 (세션 내)
-2. **기능 PRD**: `docs/prd/features/[기능명]/README.md` (디스크에 영구 저장)
-3. **설계 문서**: `docs/design/[기능명].md` (디스크에 영구 저장)
-4. **수집 컨텍스트**: step2에서 수집한 내용을 `docs/prd/features/[기능명]/context.md`에 저장
+2. **기능 PRD**: `{prd_path}/features/[기능명]/README.md` (디스크에 영구 저장, 기본: `.opensmith/docs/prd/`)
+3. **설계 문서**: `.opensmith/docs/design/[기능명].md` (디스크에 영구 저장)
+4. **수집 컨텍스트**: step2에서 수집한 내용을 `{prd_path}/features/[기능명]/context.md`에 저장
 5. **버그**: `.opensmith/bugs.json` (디스크에 영구 저장)
-6. **PRD 구현 상태**: `docs/prd/system-prd.md` Section 9의 Implemented 마킹
+6. **PRD 구현 상태**: `{prd_path}/system-prd.md` Section 9의 Implemented 마킹
+
+> `{prd_path}`는 `.opensmith/config.json`의 `prd_path` 값. 미설정 시 `.opensmith/docs/prd`. 모든 step은 이 값을 동일하게 사용.
 
 **세션이 끊겨도 복구 가능**: 디스크의 PRD/설계/context 파일이 있으면 해당 스텝부터 재개.
 

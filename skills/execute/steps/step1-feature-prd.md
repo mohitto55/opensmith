@@ -2,7 +2,9 @@
 
 ## 실행
 
-1. `docs/prd/features/` 에서 `$ARGUMENTS` 관련 PRD 검색
+> 경로 규칙: `{prd_path}` = `.opensmith/config.json`의 `prd_path` (기본 `.opensmith/docs/prd`).
+
+1. `{prd_path}/features/` 에서 `$ARGUMENTS` 관련 PRD 검색
 
 ```
 있다 → 읽기 → 현재 요구사항과 비교
@@ -13,12 +15,12 @@
 
 2. 자동 생성 시 아래 형식으로 작성
 
-저장: `docs/prd/features/[feature-name-kebab]/README.md`
+저장: `{prd_path}/features/[feature-name-kebab]/README.md`
 
 ```markdown
 # Feature PRD: [기능명]
 
-> 상위 PRD: docs/prd/system-prd.md
+> 상위 PRD: {prd_path}/system-prd.md
 > 작성일: YYYY-MM-DD
 > 상태: Auto-generated
 

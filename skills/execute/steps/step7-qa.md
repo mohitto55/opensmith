@@ -40,7 +40,7 @@ if max(img.size) > 1500: img.thumbnail((1500, 1500)); img.save(sys.argv[1])
 
 ### 7-0. PRD Bug/TODO 확인
 
-Feature PRD(`docs/prd/features/[기능명]/README.md`)의 Section 9(Bugs)와 Section 10(TODOs)를 확인합니다.
+Feature PRD(`{prd_path}/features/[기능명]/README.md`)의 Section 9(Bugs)와 Section 10(TODOs)를 확인합니다.
 작업 중 에이전트들이 기록한 Bug/TODO가 있으면:
 - status가 "open"인 항목을 전부 확인
 - 즉시 수정 가능하면 수정 후 status를 "fixed"/"done"으로 변경
@@ -48,7 +48,7 @@ Feature PRD(`docs/prd/features/[기능명]/README.md`)의 Section 9(Bugs)와 Sec
 
 ### 7-1. 기능 테스트
 
-Feature PRD(`docs/prd/features/[기능명]/README.md`)의 수용 기준(Section 3) 기반 테스트:
+Feature PRD(`{prd_path}/features/[기능명]/README.md`)의 수용 기준(Section 3) 기반 테스트:
 
 ```
 각 FR에 대해:

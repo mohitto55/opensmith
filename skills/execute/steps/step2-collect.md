@@ -82,7 +82,7 @@ GitHub CLI(`gh`)가 없거나 인증 안 되어 있으면 → 경고 출력 후 
 
 ## 결과 통합
 
-수집 결과를 `docs/prd/features/[기능명]/context.md`에 저장:
+수집 결과를 `{prd_path}/features/[기능명]/context.md`에 저장 (`{prd_path}` 기본값 `.opensmith/docs/prd`):
 
 ```markdown
 # 수집 컨텍스트: [기능명]

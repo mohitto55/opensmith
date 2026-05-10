@@ -16,7 +16,7 @@ report 실행 후 **반드시** 아래 루프 체크를 수행하세요.
 
 ### 2. system-prd.md의 현재 기능을 "Implemented"로 마킹
 
-`docs/prd/system-prd.md` Section 9에서 현재 기능의 상태를 "Implemented"로 변경합니다.
+`{prd_path}/system-prd.md` Section 9에서 현재 기능의 상태를 "Implemented"로 변경합니다 (`{prd_path}` 기본 `.opensmith/docs/prd`).
 
 ### 3. 다음 미구현 기능 확인
 

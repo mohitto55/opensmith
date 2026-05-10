@@ -39,7 +39,7 @@ claude plugin install opensmith@opensmith-marketplace --scope user
 - Phase 4~5: PRD 생성 + 사용자 검토
 - Phase 6: 프로젝트 설정 자동 생성 (.opensmith/config.json, scaffold 패턴)
 
-산출물: `docs/prd/system-prd.md`
+산출물: `.opensmith/docs/prd/system-prd.md` (기본값. `.opensmith/config.json`의 `prd_path`로 다른 경로 지정 가능)
 
 ### 2단계: 기능 구현
 

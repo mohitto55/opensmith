@@ -4,9 +4,11 @@ Feature PRD + 수집된 컨텍스트를 기반으로 기술 설계 문서를 생
 
 ## 입력
 
+> 경로 규칙: `{prd_path}` = `.opensmith/config.json`의 `prd_path` (기본 `.opensmith/docs/prd`).
+
 다음 파일들을 읽어 컨텍스트를 확보합니다:
-- Feature PRD: `docs/prd/features/[기능명]/README.md`
-- 수집 컨텍스트: `docs/prd/features/[기능명]/context.md`
+- Feature PRD: `{prd_path}/features/[기능명]/README.md`
+- 수집 컨텍스트: `{prd_path}/features/[기능명]/context.md`
 
 ## 실행
 
@@ -15,12 +17,12 @@ Feature PRD + 수집된 컨텍스트를 기반으로 기술 설계 문서를 생
 
 ### 설계 문서 형식
 
-저장: `docs/design/[feature_name].md`
+저장: `.opensmith/docs/design/[feature_name].md`
 
 ```markdown
 # 기술 설계: [기능명]
 
-> Feature PRD: docs/prd/features/[기능명]/README.md
+> Feature PRD: {prd_path}/features/[기능명]/README.md
 > 작성일: YYYY-MM-DD
 
 ## 0. 수집 컨텍스트 반영
@@ -62,4 +64,4 @@ Feature PRD + 수집된 컨텍스트를 기반으로 기술 설계 문서를 생
 
 ## 출력
 
-- 설계 문서: `docs/design/[feature_name].md`
+- 설계 문서: `.opensmith/docs/design/[feature_name].md`

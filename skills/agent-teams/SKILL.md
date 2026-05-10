@@ -91,7 +91,7 @@ python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-
 
 **반드시 PRD + 설계 문서를 먼저 확인합니다.**
 
-1. **PRD 확인**: `docs/prd/`에서 해당 기능의 PRD를 찾아 읽는다
+1. **PRD 확인**: `{prd_path}/`에서 해당 기능의 PRD를 찾아 읽는다 (`{prd_path}` = `.opensmith/config.json`의 `prd_path`, 기본 `.opensmith/docs/prd`)
    - PRD가 없으면 → **구현을 시작하지 않고** 사용자에게 "PRD가 없습니다. /dev-cycle로 먼저 PRD를 생성해주세요" 안내
    - PRD가 있으면 → 사용자 스토리, 기능 요구사항, 범위를 파악
 2. **설계 문서 확인**: `docs/design/`에서 해당 기능의 기술 설계를 찾아 읽는다
@@ -146,7 +146,7 @@ scaffold 참조:
 - .claude/skills/frontend-patterns.md
 - .claude/skills/never-do.md
 
-작업 중 버그 발견 → 해당 기능 PRD(docs/prd/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
+작업 중 버그 발견 → 해당 기능 PRD({prd_path}/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
 개선사항/PRD 누락 발견 → 해당 기능 PRD의 Section 10 TODOs 테이블에 즉시 추가.
 
 완료 후 TaskUpdate로 태스크 완료 처리"
@@ -181,7 +181,7 @@ Agent(
 # Example for MySQL: Sequelize models
 
 scaffold: .claude/skills/backend-patterns.md
-작업 중 버그 발견 → 해당 기능 PRD(docs/prd/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
+작업 중 버그 발견 → 해당 기능 PRD({prd_path}/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
 개선사항/PRD 누락 발견 → 해당 기능 PRD의 Section 10 TODOs 테이블에 즉시 추가.
 완료 후 TaskUpdate"
 )
@@ -278,9 +278,9 @@ UI 디자인 기본 원칙 (반드시 준수)
    - 위 원칙에 따른 색상 팔레트
    - 폰트 크기 체계 (H1~Caption)
 
-산출물을 docs/prd/features/[기능명]/ui-spec.md 에 저장하세요.
+산출물을 {prd_path}/features/[기능명]/ui-spec.md 에 저장하세요.
 scaffold: .claude/skills/frontend-patterns.md
-작업 중 버그 발견 → 해당 기능 PRD(docs/prd/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
+작업 중 버그 발견 → 해당 기능 PRD({prd_path}/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
 개선사항/PRD 누락 발견 → 해당 기능 PRD의 Section 10 TODOs 테이블에 즉시 추가.
 완료 후 TaskUpdate"
 )
@@ -307,7 +307,7 @@ Agent(
   prompt="당신은 {{PROJECT_NAME}} 프로젝트의 프론트엔드 개발자입니다.
 
 **반드시 UI 디자이너의 명세를 먼저 읽으세요:**
-- docs/prd/features/[기능명]/ui-spec.md
+- {prd_path}/features/[기능명]/ui-spec.md
 
 UI 명세의 와이어프레임, 컴포넌트 명세, 상태 정의, 반응형 규칙을 그대로 구현합니다.
 명세에 없는 UI를 임의로 만들지 마세요.
@@ -326,7 +326,7 @@ UI 명세의 와이어프레임, 컴포넌트 명세, 상태 정의, 반응형 �
 - 경로: frontend/
 - 반드시 .claude/skills/frontend-patterns.md를 읽고 패턴을 따르세요
 - .claude/skills/never-do.md의 금지 규칙을 준수하세요
-작업 중 버그 발견 → 해당 기능 PRD(docs/prd/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
+작업 중 버그 발견 → 해당 기능 PRD({prd_path}/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
 개선사항/PRD 누락 발견 → 해당 기능 PRD의 Section 10 TODOs 테이블에 즉시 추가.
 완료 후 TaskUpdate"
 )
@@ -351,7 +351,7 @@ Agent(
 - 경로: backend/
 - 반드시 .claude/skills/backend-patterns.md를 읽고 패턴을 따르세요
 - .claude/skills/never-do.md의 금지 규칙을 준수하세요
-작업 중 버그 발견 → 해당 기능 PRD(docs/prd/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
+작업 중 버그 발견 → 해당 기능 PRD({prd_path}/features/[기능명]/README.md)의 Section 9 Bugs 테이블에 즉시 추가.
 개선사항/PRD 누락 발견 → 해당 기능 PRD의 Section 10 TODOs 테이블에 즉시 추가.
 완료 후 TaskUpdate"
 )
@@ -414,7 +414,7 @@ python ${CLAUDE_PLUGIN_ROOT}/scripts/update_phase.py "$CLAUDE_SESSION_ID" agent-
 **모든 역할의 에이전트는 작업 도중 이상한 점을 발견하면 해당 기능 PRD에 즉시 기록합니다.**
 QA 단계까지 미루지 마세요.
 
-기록 위치: `docs/prd/features/[기능명]/README.md`
+기록 위치: `{prd_path}/features/[기능명]/README.md`
 
 ```
 작업 중 이상 발견:

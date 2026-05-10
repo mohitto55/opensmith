@@ -1,10 +1,12 @@
 # 서브스킬: 완료 보고
 
+> 경로 규칙: `{prd_path}` = `.opensmith/config.json`의 `prd_path` (기본 `.opensmith/docs/prd`).
+
 ## 실행
 
 1. **PRD 상태 갱신**
-   - `docs/prd/features/[feature_name]/README.md` 상태 → `Implemented`
-   - `docs/prd/system-prd.md` Section 9 기능 목록 상태 갱신
+   - `{prd_path}/features/[feature_name]/README.md` 상태 → `Implemented`
+   - `{prd_path}/system-prd.md` Section 9 기능 목록 상태 갱신
 
 2. **Memory Bank 팩트 자동 추출**
 
@@ -37,7 +39,7 @@
 
 ```
 해결된 이슈 찾기:
-  1. Feature PRD(docs/prd/features/[기능명]/README.md)의 Section 9 Bugs에서
+  1. Feature PRD({prd_path}/features/[기능명]/README.md)의 Section 9 Bugs에서
      status가 "fixed"이고 github_issue가 있는 항목 수집
   2. step0에서 동기화한 GitHub 이슈 중 이 기능과 관련된 것 확인
   3. PRD Section 10 TODOs에서 status가 "done"이고 GH- 접두어가 있는 항목 수집
@@ -55,8 +57,8 @@ gh 명령 실패 시 → 경고만 출력하고 계속 진행
 ```
 기능 구현 완료: [feature_name]
 
-PRD: docs/prd/features/[기능명]/README.md
-설계: docs/design/[기능명].md
+PRD: {prd_path}/features/[기능명]/README.md
+설계: .opensmith/docs/design/[기능명].md
 
 변경 사항:
 - Backend: [파일 목록]

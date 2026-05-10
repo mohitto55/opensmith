@@ -20,7 +20,7 @@ Phase 2: 세분화 질문 — 빠진 부분을 구조화된 질문으로 요청
        ↓
 Phase 3: 반복 심화 — 답변 기반 추가 질문 (최대 3라운드)
        ↓
-Phase 4: PRD 생성 — docs/prd/system-prd.md 작성
+Phase 4: PRD 생성 — {prd_path}/system-prd.md 작성 (기본: .opensmith/docs/prd/)
        ↓
 Phase 5: 검토 및 확정 — 사용자 확인 후 최종 저장
        ↓
@@ -47,10 +47,15 @@ Phase 6: 프로젝트 설정 자동 생성 — PRD Section 6 기반으로 환경
 - 기술 제약
 ```
 
-### 1-1. 기존 PRD 확인
+### 1-1. PRD 저장 경로 확인
+
+PRD 산출물의 기본 저장 경로는 **`.opensmith/docs/prd/`** 입니다 (사용자 프로젝트 폴더 오염 방지).
+사용자가 다른 위치를 원하면 `.opensmith/config.json`의 `prd_path` 키로 오버라이드 가능합니다.
 
 ```bash
-ls docs/prd/ 2>/dev/null
+# .opensmith/config.json에서 prd_path를 읽고, 없으면 기본값 사용
+PRD_PATH=$(jq -r '.prd_path // ".opensmith/docs/prd"' .opensmith/config.json 2>/dev/null || echo ".opensmith/docs/prd")
+ls "$PRD_PATH/" 2>/dev/null
 ```
 
 - 기존 시스템 PRD가 있다 → 읽고 현재 요청과 비교
@@ -118,12 +123,14 @@ ls docs/prd/ 2>/dev/null
 
 ### 3-1. 저장 경로 결정
 
+기본 베이스 경로는 `.opensmith/docs/prd/`. `.opensmith/config.json`의 `prd_path`가 있으면 그 값을 사용.
+
 ```
 시스템 PRD (프로젝트 전체):
-  docs/prd/system-prd.md
+  {prd_path}/system-prd.md            # 기본: .opensmith/docs/prd/system-prd.md
 
 기능 PRD (개별 기능):
-  docs/prd/features/[기능명-kebab-case].md
+  {prd_path}/features/[기능명-kebab-case].md
 ```
 
 - `$ARGUMENTS`가 프로젝트 전체를 설명하면 → `system-prd.md`
@@ -218,7 +225,7 @@ ls docs/prd/ 2>/dev/null
 | [지표 2] | [목표값] | [측정 방법] |
 
 ## 9. 기능 목록 (Feature Index)
-> 각 기능의 세분화 PRD는 docs/prd/features/ 에 별도 작성됩니다.
+> 각 기능의 세분화 PRD는 `{prd_path}/features/` 에 별도 작성됩니다 (기본: `.opensmith/docs/prd/features/`).
 
 | ID | 기능명 | PRD 링크 | 상태 |
 |----|--------|----------|------|
@@ -234,7 +241,7 @@ PRD 초안을 사용자에게 보여줍니다:
 ```
 PRD를 작성했습니다. 검토해주세요:
 
-📋 docs/prd/system-prd.md
+📋 {prd_path}/system-prd.md
 
 수정할 부분이 있으면 알려주세요.
 확인되면 상태를 "Approved"로 변경합니다.
@@ -263,6 +270,7 @@ PRD Section 6의 기술 스택 + 라운드 2 답변을 종합:
 ```json
 {
   "project_name": "[PRD에서 추출]",
+  "prd_path": ".opensmith/docs/prd",
   "tech_stack": {
     "frontend": "[PRD Section 6]",
     "backend": "[PRD Section 6]",
@@ -333,7 +341,7 @@ Memory Bank는 과거 의사결정, 에러 패턴, 프로젝트 제약사항을 
 ```
 프로젝트 설정이 완료되었습니다:
 
-📋 PRD: docs/prd/system-prd.md
+📋 PRD: .opensmith/docs/prd/system-prd.md (config.json의 prd_path로 변경 가능)
 ⚙️ 설정: .opensmith/config.json
 📐 scaffold: .claude/skills/frontend-patterns.md, backend-patterns.md, never-do.md
 
@@ -347,8 +355,8 @@ Memory Bank는 과거 의사결정, 에러 패턴, 프로젝트 제약사항을 
 
 | 산출물 | 경로 |
 |--------|------|
-| 시스템 PRD | `docs/prd/system-prd.md` |
-| 기능 PRD (개별) | `docs/prd/features/[기능명].md` |
+| 시스템 PRD | `.opensmith/docs/prd/system-prd.md` (기본값, `config.json` `prd_path`로 오버라이드) |
+| 기능 PRD (개별) | `.opensmith/docs/prd/features/[기능명].md` (동일하게 오버라이드 가능) |
 | 프로젝트 설정 | `.opensmith/config.json` |
 | 프론트엔드 패턴 | `.claude/skills/frontend-patterns.md` |
 | 백엔드 패턴 | `.claude/skills/backend-patterns.md` |

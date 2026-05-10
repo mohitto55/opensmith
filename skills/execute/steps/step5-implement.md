@@ -6,10 +6,12 @@
 
 ## 실행
 
+> `{prd_path}` = `.opensmith/config.json`의 `prd_path` (기본 `.opensmith/docs/prd`).
+
 다음 파일들을 읽어 컨텍스트를 확보합니다:
-- Feature PRD: `docs/prd/features/[기능명]/README.md`
-- 설계 문서: `docs/design/[기능명].md`
-- 수집 컨텍스트: `docs/prd/features/[기능명]/context.md`
+- Feature PRD: `{prd_path}/features/[기능명]/README.md`
+- 설계 문서: `.opensmith/docs/design/[기능명].md`
+- 수집 컨텍스트: `{prd_path}/features/[기능명]/context.md`
 
 **TDD 필수**: agent-teams의 프론트엔드/백엔드 개발자는 반드시 테스트를 먼저 작성한 후 구현합니다 (Red → Green → Refactor).
 
@@ -22,12 +24,12 @@ agent-teams 스킬이 7역할 팀을 자동으로 구성하고 Phase 0~5를 실�
 ```
 Skill(skill="opensmith:agent-teams", args="$FEATURE_ARGS
 
-PRD: docs/prd/features/[기능명]/README.md
-설계: docs/design/[기능명].md
+PRD: {prd_path}/features/[기능명]/README.md
+설계: .opensmith/docs/design/[기능명].md
 위 문서에 따라 구현하세요. 설계에 없는 것은 구현하지 마세요.
 TDD 필수: 모든 기능은 테스트 먼저 작성 후 구현 (Red → Green → Refactor).
 
-수집 컨텍스트: docs/prd/features/[기능명]/context.md")
+수집 컨텍스트: {prd_path}/features/[기능명]/context.md")
 ```
 
 **주의:**

@@ -1,11 +1,13 @@
 # 서브스킬: 사용자 승인
 
+> 경로 규칙: `{prd_path}` = `.opensmith/config.json`의 `prd_path` (기본 `.opensmith/docs/prd`).
+
 ## 입력
 
 다음 파일들을 읽어 승인 요약을 작성합니다:
-- Feature PRD: `docs/prd/features/[기능명]/README.md`
-- 설계 문서: `docs/design/[기능명].md`
-- 수집 컨텍스트: `docs/prd/features/[기능명]/context.md`
+- Feature PRD: `{prd_path}/features/[기능명]/README.md`
+- 설계 문서: `.opensmith/docs/design/[기능명].md`
+- 수집 컨텍스트: `{prd_path}/features/[기능명]/context.md`
 
 ## 실행
 
@@ -14,8 +16,8 @@
 ```
 실행 계획을 수립했습니다:
 
-세분화 PRD: docs/prd/features/[기능명]/README.md
-기술 설계: docs/design/[기능명].md
+세분화 PRD: {prd_path}/features/[기능명]/README.md
+기술 설계: .opensmith/docs/design/[기능명].md
 
 요약:
 - API: [엔드포인트 N개]

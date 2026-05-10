@@ -17,8 +17,10 @@
 
 ### 0-0a. 미해결 TODO 확인
 
+> 경로 규칙: `{prd_path}` = `.opensmith/config.json`의 `prd_path` 값. 미설정 시 `.opensmith/docs/prd`. 아래 모든 경로의 `docs/prd`는 `{prd_path}`로 해석.
+
 ```
-docs/prd/features/ 아래 모든 기능 디렉토리를 순회:
+{prd_path}/features/ 아래 모든 기능 디렉토리를 순회:
   각 README.md의 Section 10(TODOs) 테이블에서 status가 "open"인 항목 수집
 
   ├─ open TODO 있음
@@ -66,7 +68,7 @@ gh 명령 실패 시 (gh 미설치, 인증 없음 등) → 경고만 출력하�
 
 ### 0-1. 시스템 PRD 읽기
 
-1. `docs/prd/system-prd.md` 읽기
+1. `{prd_path}/system-prd.md` 읽기 (기본 `.opensmith/docs/prd/system-prd.md`)
 
 ```
 없다 → 중단. "시스템 PRD가 없습니다. /prd 로 먼저 작성해주세요."
@@ -100,7 +102,7 @@ Section 9(기능 인덱스)의 모든 기능에 대해 TaskCreate를 호출합�
   └─ 미구현 → TaskCreate 호출
       TaskCreate(
         subject="[F-N] [기능명]",
-        description="PRD 기능 구현\n- PRD: docs/prd/system-prd.md Section 9\n- 상태: 미구현\n- 우선순위: [P0/P1/P2]"
+        description="PRD 기능 구현\n- PRD: {prd_path}/system-prd.md Section 9\n- 상태: 미구현\n- 우선순위: [P0/P1/P2]"
       )
 
 --all 모드: 모든 미구현 기능에 대해 TODO 생성
