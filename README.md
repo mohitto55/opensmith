@@ -170,6 +170,7 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh --event build_success --message "�
 | `/opensmith:scaffold-update` | scaffold 패턴 수동 업데이트 |
 | `/opensmith:self-improve` | 자가개선 루프 실행 |
 | `/opensmith:merge-worktree` | 워크트리 스쿼시 머지 |
+| `/opensmith:quiz-me` | 프로젝트 구조/코드 이해도 점검 퀴즈 |
 
 ---
 
